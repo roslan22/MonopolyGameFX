@@ -1,34 +1,74 @@
 package monopolyBoard;
 
+import java.awt.geom.IllegalPathStateException;
+import java.io.File;
 import java.io.IOException;
-import java.net.URL;
+import java.util.List;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import monopolyBoard.scenes.init.BoardSceneController;
+import monopolyBoard.scenes.init.GameInitSceneController;
+import monopolyBoard.scenes.init.GetNamesSceneController;
 
 
 public class MonopolBoard extends Application {
     
     private static final String BOARD_SCENE_FXML_PATH = "scenes/init/BoardScene.fxml";
-    //private BoardManager boardManager;
+    private static final String GAME_INIT_SCENE_FXML_PATH = "scenes/init/game_init_scene.fxml";
+    private static final String GET_NAMES_SCENE_FXML_PATH = "scenes/init/game_init_get_human_names.fxml";
 
+    private Stage primaryStage;
+
+    private File externalXML;
+    private int humanPlayers;
+    private int computerPlayers;
     
     @Override
-    public void start(Stage primaryStage) throws Exception 
+    public void start(Stage primaryStage)
     {
-        
-        FXMLLoader fxmlLoader = getBoardFXMLLoader();
-        Parent boardRoot = getBoardRoot(fxmlLoader);
-        BoardSceneController boardController = getBoardSceneController(fxmlLoader, primaryStage);
-
-        Scene scene = new Scene(boardRoot, 896, 560);
+        this.primaryStage = primaryStage;
 
         primaryStage.setTitle("Monopoly Board");
-        primaryStage.setScene(scene);
+        primaryStage.setResizable(false);
+
+        showGameInit();
+    }
+
+    private void showGameInit()
+    {
+        FXMLLoader gameInitXMLLoader = getFXMLLoader(GAME_INIT_SCENE_FXML_PATH);
+        primaryStage.setScene(new Scene(getRoot(gameInitXMLLoader)));
+
+        GameInitSceneController gameInitController = gameInitXMLLoader.getController();
+        gameInitController.setXmlValidator(xml -> false);
+        gameInitController.setNextListener(() -> endGameInit(gameInitController));
         primaryStage.show();
+    }
+
+    private void endGameInit(GameInitSceneController gameInitController)
+    {
+        externalXML = gameInitController.getXMLFile();
+        humanPlayers = gameInitController.getHumanPlayers();
+        computerPlayers = gameInitController.getComputerPlayers();
+        askForHumanPlayersNames(gameInitController.getHumanPlayers());
+    }
+
+    private void askForHumanPlayersNames(int humanPlayers)
+    {
+        FXMLLoader getNamesFXMLLoader = getFXMLLoader(GET_NAMES_SCENE_FXML_PATH);
+        primaryStage.setScene(new Scene(getRoot(getNamesFXMLLoader)));
+        GetNamesSceneController getNamesFXMLLoaderController = getNamesFXMLLoader.getController();
+        getNamesFXMLLoaderController.setHumanPlayersNumber(humanPlayers);
+        getNamesFXMLLoaderController.setGetNamesEndedListener(() -> endGetNames(getNamesFXMLLoaderController.getNames()));
+    }
+
+    private void endGetNames(List<String> names)
+    {
+        FXMLLoader getNamesFXMLLoader = getFXMLLoader(BOARD_SCENE_FXML_PATH);
+        primaryStage.setScene(new Scene(getRoot(getNamesFXMLLoader)));
     }
 
     /**
@@ -38,27 +78,20 @@ public class MonopolBoard extends Application {
         launch(args);
     }
 
-    private FXMLLoader getBoardFXMLLoader() 
+    private FXMLLoader getFXMLLoader(String fxmlPath)
     {
-        FXMLLoader fxmlLoader = new FXMLLoader();
-        URL url = getClass().getResource(BOARD_SCENE_FXML_PATH);
-        fxmlLoader.setLocation(url);
-        return fxmlLoader;
+        return new FXMLLoader(getClass().getResource(fxmlPath));
     }
 
-    private Parent getBoardRoot(FXMLLoader fxmlLoader) throws IOException {
-        return (Parent) fxmlLoader.load(fxmlLoader.getLocation().openStream());
+    private Parent getRoot(FXMLLoader fxmlLoader) {
+        try
+        {
+            return (Parent) fxmlLoader.load(fxmlLoader.getLocation().openStream());
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+            throw new IllegalPathStateException(e.getMessage());
+        }
     }
 
-    private BoardSceneController getBoardSceneController(FXMLLoader fxmlLoader, Stage primaryStage) {
-        BoardSceneController boardController = (BoardSceneController) fxmlLoader.getController();
-        /* boardController.setBoardManager(boardManager);
-           boardController.finishedInit().addListener((source, oldValue, newValue) -> {
-            if (newValue) {
-                final GameScene gameScene = new GameScene(playersManager);
-                primaryStage.setScene(gameScene);
-            }
-        }); */
-        return boardController;    
-    }
 }
