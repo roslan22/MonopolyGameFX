@@ -185,20 +185,27 @@ public class GameInitSceneController implements Initializable
     private void addPlayerToLabel(Label l)
     {
         l.setText(String.valueOf(Integer.parseInt(l.getText()) + 1));
-        if (getTotalPlayers() == MAXIMUM_PLAYERS)
-            disableAddButtons();
-        if (getTotalPlayers() > MINIMUM_PLAYERS)
-            enableRemoveButtons();
+        updateButtonsDisabling();
     }
 
     private void removePlayerFromLabel(Label l)
     {
         if (Integer.parseInt(l.getText()) != 0)
             l.setText(String.valueOf(Integer.parseInt(l.getText()) - 1));
-        if (getTotalPlayers() == MINIMUM_PLAYERS)
-            disableRemoveButtons();
-        if (getTotalPlayers() < MAXIMUM_PLAYERS)
+        updateButtonsDisabling();
+    }
+
+    private void updateButtonsDisabling()
+    {
+        if (getTotalPlayers() >= MAXIMUM_PLAYERS)
+            disableAddButtons();
+        else
             enableAddButtons();
+
+        if (getTotalPlayers() > MINIMUM_PLAYERS)
+            enableRemoveButtons();
+        else
+            disableRemoveButtons();
     }
 
     private int getTotalPlayers()
