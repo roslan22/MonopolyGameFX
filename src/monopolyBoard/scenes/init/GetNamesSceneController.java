@@ -83,16 +83,9 @@ public class GetNamesSceneController implements Initializable
         if (playerNameTextField.getText().isEmpty())
             showErrorMessage("Please type a name");
         else if (names.contains(playerNameTextField.getText()))
-        {
             showErrorMessage("Name already exists");
-            nameExists();
-        }
         else
-        {
             addName();
-            if (names.size() == humanPlayersNumber && getNamesEndedListener != null)
-                getNamesEndedListener.onGetNameEnded();
-        }
     }
 
     private void nameExists()
@@ -124,6 +117,8 @@ public class GetNamesSceneController implements Initializable
         currentPlayerIndex++;
         playerNameTextField.clear();
         setCurrentPlayerLabelText();
+        if (names.size() == humanPlayersNumber && getNamesEndedListener != null)
+            getNamesEndedListener.onGetNameEnded();
     }
 
     public List<String> getNames()

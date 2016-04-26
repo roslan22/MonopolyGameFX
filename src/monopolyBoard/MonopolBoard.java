@@ -67,10 +67,21 @@ public class MonopolBoard extends Application {
     private void askForHumanPlayersNames(int humanPlayers)
     {
         FXMLLoader getNamesFXMLLoader = getFXMLLoader(GET_NAMES_SCENE_FXML_PATH);
-        primaryStage.setScene(new Scene(getRoot(getNamesFXMLLoader)));
+        Parent root = getRoot(getNamesFXMLLoader);
         GetNamesSceneController getNamesFXMLLoaderController = getNamesFXMLLoader.getController();
         getNamesFXMLLoaderController.setHumanPlayersNumber(humanPlayers);
-        getNamesFXMLLoaderController.setGetNamesEndedListener(() -> endGetNames(getNamesFXMLLoaderController.getNames()));
+        showNextScene(humanPlayers, root, getNamesFXMLLoaderController);
+    }
+
+    private void showNextScene(int humanPlayers, Parent root, GetNamesSceneController getNamesFXMLLoaderController)
+    {
+        if (humanPlayers != 0)
+        {
+            primaryStage.setScene(new Scene(root));
+            getNamesFXMLLoaderController.setGetNamesEndedListener(() -> endGetNames(getNamesFXMLLoaderController.getNames()));
+        }
+        else
+            endGetNames(getNamesFXMLLoaderController.getNames());
     }
 
     private void endGetNames(List<String> names)
