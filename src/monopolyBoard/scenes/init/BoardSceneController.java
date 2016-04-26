@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package monopolyBoard.scenes.init;
 
 import java.net.URL;
@@ -19,6 +14,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.TextAlignment;
 
 /**
  *
@@ -27,29 +23,23 @@ import javafx.scene.layout.Pane;
 public class BoardSceneController implements Initializable {
     
     @FXML
-    private Label label;
-    
-    @FXML
-    private TextField playerNameTextField;
+    private Label messageLabel;
     
     @FXML
     private GridPane gridPaneMain;
     
     @FXML
-    private void handleButtonAction(ActionEvent event) {
+    private void showMessageOnBoard(ActionEvent event) {
         System.out.println("You clicked me!");
-        label.setText("Hello World!");
+        messageLabel.setText("Hello World! sad sad sad asdasd ads asd sad");
+        messageLabel.setTextAlignment(TextAlignment.CENTER);
     }
     
-    @FXML
-    private void onTextChanged(ActionEvent event) {
-        System.out.println("Text was changed!");
-        //label.setText("Hello World!");
-    }
     public final static int FIRST_ROW = 0;
     public final static int LAST_ROW = 9;
     public final static int FIRST_COLUMN = 0;
     public final static int LAST_COLUMN = 9;
+    public final static int MAX_PLAYERS_NUM = 6;
     
     private boolean isErrorMessageShown = false;
     private SimpleBooleanProperty finishedInit;
@@ -64,47 +54,23 @@ public class BoardSceneController implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-         playerNameTextField.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> ov, String t, String t1) {
-                onTextChanged();
-            }
-
-             private void onTextChanged() {
-                System.out.println("Text was changed 2!");
-             }
-        });
         finishedInit = new SimpleBooleanProperty(false);
         initLinesOfCells();
         boardCells.get(0).getChildren().add(new Label("START"));
-        addPlayerToBoard();
+        addPlayerToBoard(MAX_PLAYERS_NUM);
     }   
     
-    public void addPlayerToBoard()
+    public void addPlayerToBoard(int playersNumber)
     {
-        ImageView myImage = createPlayerIcon("monopolyBoard/css/images/icon_player_shoe.png");
-        boardCells.get(0).getChildren().add(
-                myImage);
-        
-        boardCells.get(1).getChildren().add(
-                createPlayerIcon("monopolyBoard/css/images/icon_player_lion.png"));
-        
-        boardCells.get(2).getChildren().add(
-                createPlayerIcon("monopolyBoard/css/images/icon_player_battleship.png"));
-        
-        boardCells.get(3).getChildren().add(
-                createPlayerIcon("monopolyBoard/css/images/icon_player_car.png"));
-        
-        boardCells.get(4).getChildren().add(
-                createPlayerIcon("monopolyBoard/css/images/icon_player_hat.png"));
-        
-        boardCells.get(5).getChildren().add(
-                createPlayerIcon("monopolyBoard/css/images/icon_player_wagon.png"));
+        for(int i=1; i <= playersNumber; i++)
+        {
+           boardCells.get(i).getChildren().add(createPlayerIcon(i));
+        }
     }
 
-    private ImageView createPlayerIcon(String url) {
-        ImageView playerIcon = new ImageView(url);
-        //playerIcon.setId("player2");
+    private ImageView createPlayerIcon(int playerIndex) {
+        ImageView playerIcon = new ImageView();
+        playerIcon.setId("player" + playerIndex);
         playerIcon.setFitHeight(30);
         playerIcon.setFitWidth(30);
         return playerIcon;

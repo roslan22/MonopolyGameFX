@@ -3,6 +3,7 @@ package monopolyBoard;
 import java.awt.geom.IllegalPathStateException;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javafx.application.Application;
@@ -33,7 +34,14 @@ public class MonopolBoard extends Application {
 
         primaryStage.setTitle("Monopoly Board");
         primaryStage.setResizable(false);
-
+        /*---------------------- REMOVE THIS SECTION BEFORE UPLOADING TO GIT -------------------------
+        List<String> playerNames = new ArrayList<>();
+        playerNames.add("Moshe");
+        playerNames.add("Gabi");
+        endGetNames(playerNames);
+        primaryStage.show();
+        ------------------------------------------------*/
+        
         showGameInit();
     }
 
