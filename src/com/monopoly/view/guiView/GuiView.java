@@ -151,4 +151,9 @@ public class GuiView extends View
     {
 
     }
+
+    public static Boolean isNewGameRequired()
+    {
+        return true;
+    }
 }

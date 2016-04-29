@@ -2,7 +2,6 @@ package com.monopoly.view.guiView;
 
 import com.monopoly.controller.Controller;
 import com.monopoly.logic.engine.MonopolyEngine;
-import com.monopoly.view.consoleView.ConsoleView;
 import com.monopoly.view.guiView.controllers.BoardSceneController;
 import com.monopoly.view.guiView.controllers.GameInitSceneController;
 import com.monopoly.view.guiView.controllers.GetNamesSceneController;
@@ -22,9 +21,9 @@ import javafx.stage.Stage;
 
 public class MonopolBoard extends Application {
     
-    private static final String BOARD_SCENE_FXML_PATH = "../res/scenes/BoardScene.fxml";
-    private static final String GAME_INIT_SCENE_FXML_PATH = "../res/scenes/game_init_scene.fxml";
-    private static final String GET_NAMES_SCENE_FXML_PATH = "../res/scenes/game_init_get_human_names.fxml";
+    private static final String BOARD_SCENE_FXML_PATH = "../../res/scenes/BoardScene.fxml";
+    private static final String GAME_INIT_SCENE_FXML_PATH = "../../res/scenes/game_init_scene.fxml";
+    private static final String GET_NAMES_SCENE_FXML_PATH = "../../res/scenes/game_init_get_human_names.fxml";
 
     private Stage primaryStage;
 
@@ -135,7 +134,7 @@ public class MonopolBoard extends Application {
         while(isNewGameRequired)
         {
             playMonopoly();
-            isNewGameRequired = ConsoleView.isNewGameRequired();
+            isNewGameRequired = GuiView.isNewGameRequired();
         }
     }
 
