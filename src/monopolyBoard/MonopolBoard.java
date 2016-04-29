@@ -11,6 +11,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import monopolyBoard.scenes.init.BoardSceneController;
 import monopolyBoard.scenes.init.GameInitSceneController;
 import monopolyBoard.scenes.init.GetNamesSceneController;
 
@@ -38,6 +39,9 @@ public class MonopolBoard extends Application {
         List<String> playerNames = new ArrayList<>();
         playerNames.add("Moshe");
         playerNames.add("Gabi");
+        playerNames.add("Ilan");
+        computerPlayers = 3;
+        humanPlayers = 3;
         endGetNames(playerNames);
         primaryStage.show();
         ------------------------------------------------*/
@@ -87,7 +91,11 @@ public class MonopolBoard extends Application {
     private void endGetNames(List<String> names)
     {
         FXMLLoader getNamesFXMLLoader = getFXMLLoader(BOARD_SCENE_FXML_PATH);
-        primaryStage.setScene(new Scene(getRoot(getNamesFXMLLoader)));
+        Parent root = getRoot(getNamesFXMLLoader);
+        BoardSceneController boardSceneController = getNamesFXMLLoader.getController();
+        
+        boardSceneController.setPlayers(names, humanPlayers, computerPlayers);
+        primaryStage.setScene(new Scene(root));
     }
 
     /**
