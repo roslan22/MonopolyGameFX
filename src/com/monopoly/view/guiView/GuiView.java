@@ -3,6 +3,7 @@ package com.monopoly.view.guiView;
 import com.monopoly.logic.events.Event;
 import com.monopoly.view.View;
 
+import java.io.File;
 import java.util.List;
 
 public class GuiView extends View
@@ -23,7 +24,8 @@ public class GuiView extends View
     @Override
     public String loadExternalXmlPath()
     {
-        return monopolBoard.getExternalXML().getAbsolutePath();
+        File externalXML = monopolBoard.getExternalXML();
+        return externalXML != null ? externalXML.getAbsolutePath() : null;
     }
 
     @Override
