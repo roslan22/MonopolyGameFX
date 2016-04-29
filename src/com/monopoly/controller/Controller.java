@@ -33,7 +33,6 @@ public class Controller
         view.setPlayerBuyHouseDecision((eventID, answer) -> buy(DUMMY_PLAYER_ID, eventID, answer));
         view.setPlayerBuyAssetDecision((eventID, answer) -> buy(DUMMY_PLAYER_ID, eventID, answer));
         view.setPlayerResign(() -> resign(DUMMY_PLAYER_ID));
-        view.init();
     }
 
     public void play()

@@ -39,7 +39,7 @@ public class MonopolBoard extends Application {
 
         primaryStage.setTitle("Monopoly");
         primaryStage.setResizable(false);
-        startGame();
+        showGameInit();
     }
 
     public File getExternalXML()
@@ -105,6 +105,7 @@ public class MonopolBoard extends Application {
         
         boardSceneController.setPlayers(names, humanPlayers, computerPlayers);
         primaryStage.setScene(new Scene(root));
+        startGame();
     }
 
     private FXMLLoader getFXMLLoader(String fxmlPath)
