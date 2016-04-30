@@ -6,7 +6,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="308.0" prefWidth="450.0" stylesheets="@../css/material-design.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.monopoly.view.guiView.controllers.GetNamesSceneController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="308.0" prefWidth="450.0" stylesheets="@../../res/css/material-design.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.monopoly.view.guiView.controllers.GetNamesSceneController">
    <children>
       <Label fx:id="messageLabel" prefHeight="25.0" prefWidth="436.0" style="-fx-text-fill: #FFD700; -fx-background-color: #333333; -fx-font-family: Roboto; -fx-font-weight: bold; -fx-opacity: 1;" textFill="GOLD" visible="false">
          <padding>

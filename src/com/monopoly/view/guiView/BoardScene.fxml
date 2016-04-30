@@ -6,7 +6,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="560.0" prefWidth="896.0" snapToPixel="false" stylesheets="@../css/material-design.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.monopoly.view.guiView.controllers.BoardSceneController">
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="560.0" prefWidth="896.0" snapToPixel="false" stylesheets="@../../res/css/material-design.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.monopoly.view.guiView.controllers.BoardSceneController">
     <children>
         <Button fx:id="button" layoutX="754.0" layoutY="272.0" onAction="#onRollClicked" prefHeight="69.0" prefWidth="98.0" text="Roll!" />
         <Label fx:id="messageLabel" layoutX="120.0" layoutY="160.0" minHeight="16" minWidth="69" prefHeight="69.0" prefWidth="470.0" textAlignment="CENTER" textOverrun="CENTER_ELLIPSIS" />
