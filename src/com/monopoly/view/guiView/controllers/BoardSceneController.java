@@ -1,40 +1,42 @@
 package com.monopoly.view.guiView.controllers;
 
+import com.monopoly.view.playerDescisions.PlayerBuyAssetDecision;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
 import java.util.ResourceBundle;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.TextAlignment;
 
 public class BoardSceneController implements Initializable {
-    
-    @FXML
-    private Label messageLabel;
     
     @FXML
     private GridPane gridPaneMain;
     
     @FXML 
-    private Button resignButton;
+    private VBox vboxPlayers;
+    
+    @FXML
+    private TextArea msgTextArea;
     
     @FXML 
-    private VBox vboxPlayers;
+    private Pane promtPane;
+    
+    @FXML
+    private TextArea textAreaPromt;
     
     public final static int FIRST_ROW = 0;
     public final static int LAST_ROW = 9;
@@ -51,31 +53,26 @@ public class BoardSceneController implements Initializable {
     private int nextPlayerPlaceIndex = 1;
     public static final ObservableList allGamePlayers = 
         FXCollections.observableArrayList();
+    private PlayerBuyAssetDecision playerBuyAssetDecision;
+    private int waitingForAnswerEventId = 0;
     
     @FXML
-    private void onRollClicked(ActionEvent event) {
-        Random rand = new Random(); //TODO: DELETE WHEN ENGINE WILL BE READY
-        int randomCell = rand.nextInt(35); //TODO: DELETE WHEN ENGINE WILL BE READY
-        int randomPlayer = rand.nextInt(playersPlaceOnBoard.size()); //TODO: DELETE WHEN ENGINE WILL BE READY
-        
-        movePlayerIcon(randomCell, allGamePlayers.get(randomPlayer).toString());
-        messageLabel.setText("Player " + allGamePlayers.get(randomPlayer).toString() 
-                + " moved to " + randomCell + " cell");
-        messageLabel.setTextAlignment(TextAlignment.CENTER);
+    private void onYesClicked()
+    {
+        playerBuyAssetDecision.onAnswer(waitingForAnswerEventId, true);
     }
     
     @FXML
-    private void onResignClicked(ActionEvent event) {
-        messageLabel.setText("Player desided to resign");
-        messageLabel.setTextAlignment(TextAlignment.CENTER);
+    private void onNoClicked()
+    {
+        playerBuyAssetDecision.onAnswer(waitingForAnswerEventId, false);
     }
     
-    /* private BoardManager boardManager;
-
-    public void setPlayersManager(BoardManager playersManager) {
-        this.BoardManager = playersManager;
+    @FXML
+    private void onResignClicked()
+    {
+        //super.playerBuyAssetDecision
     }
-    */
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -231,18 +228,30 @@ public class BoardSceneController implements Initializable {
         return currentCellNumber == 0 || currentCellNumber == 9 || currentCellNumber == 18 || currentCellNumber == 27;
     }
 
-    private void movePlayerIcon(int cell, String PlayerName) 
+    public void movePlayerIcon(int cell, String PlayerName) 
     {
-        Node playerIcon;
+        Node playerIcon = playersPlaceOnBoard.get(PlayerName);
         
-        playerIcon = playersPlaceOnBoard.get(PlayerName);
         if(playerIcon != null)
         {            
           if(!boardCells.get(cell).getChildren().contains(playerIcon))
           {
-            boardCells.get(cell).getChildren().add(playerIcon);
+            boardCells.get(cell).getChildren().add(playerIcon);       
           }
         }
+        
     }
     
+    public void showMessage(String message)
+    {
+      String prevText = msgTextArea.getText();
+      msgTextArea.setText(prevText + "\n" + message);
+    }
+    
+    public void promtPlayer(String text, PlayerBuyAssetDecision playersDecision, int eventID)
+    {
+        this.playerBuyAssetDecision = playersDecision;
+        textAreaPromt.setText(text);
+        this.waitingForAnswerEventId = eventID;
+    }
 }

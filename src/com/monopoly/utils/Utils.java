@@ -3,6 +3,8 @@ package com.monopoly.utils;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import javax.xml.XMLConstants;
@@ -21,7 +23,11 @@ public class Utils
     {
         try
         {
-            return Paths.get(clazz.getResource(relativePath).toURI()).toString();
+            System.out.println("path is : " + clazz.getResource(relativePath).toURI().toString());
+            URL url = clazz.getResource(relativePath);
+            InputStream iStream = clazz.getResourceAsStream(relativePath);
+            
+            return relativePath;
         } catch (URISyntaxException e)
         {
             throw new IllegalArgumentException(e.getMessage());
@@ -39,10 +45,10 @@ public class Utils
         }
     }
 
-    public static boolean validateXMLAgainstXSD(String xmlFilePath, String xsdFilePath)
+    public static boolean validateXMLAgainstXSD(Class clazz, String xmlFilePath, String xsdFilePath)
     {
-        try (InputStream xsdInputStream = new FileInputStream(xsdFilePath);
-             InputStream xmlInputStream = new FileInputStream(xmlFilePath))
+        try (InputStream xsdInputStream = clazz.getResourceAsStream(xsdFilePath);
+             InputStream xmlInputStream = clazz.getResourceAsStream(xmlFilePath))
         {
             SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
             Schema schema = factory.newSchema(new StreamSource(xsdInputStream));

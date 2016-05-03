@@ -19,7 +19,7 @@ public class Controller
     public static final int    MAXIMUM_GAME_PLAYERS = 6;
     public static       int    DUMMY_PLAYER_ID      = 1;
     public static       String DEFAULT_XML_PATH             = Utils
-            .getAbsolutePath(XmlMonopolyInitReader.class, "/com/monopoly/res/monopolyConfig/monopoly_config.xml");
+           .getAbsolutePath(XmlMonopolyInitReader.class, "configs/monopoly_config.xml");
 
     public Controller(View view, MonopolyEngine engine)
     {

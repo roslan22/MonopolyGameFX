@@ -49,109 +49,113 @@ public class GuiView extends View
     @Override
     protected void showPlayerMove(Event event)
     {
-
+        monopolBoard.showMessageToPlayer(event.getEventMessage());
     }
 
     @Override
     protected void promptPlayerToBuy(Event event)
     {
-
+      monopolBoard.promtPlayerToBuy(event.getEventMessage(), playerBuyAssetDecision, 
+              event.getEventID());
     }
 
     @Override
     protected void showGameStartedMsg()
     {
+        monopolBoard.showMessageToPlayer("Game Started");
 
     }
 
     @Override
     protected void showGameOverMsg()
     {
-
+        monopolBoard.showMessageToPlayer("Game Over");
     }
 
     @Override
     protected void showDiceRollResult(Event event)
     {
-
+        monopolBoard.showMessageToPlayer(event.getEventMessage());
+        monopolBoard.movePlayer(event.getFirstDiceResult() + event.getSecondDiceResult(),
+                event.getPlayerName());
     }
 
     @Override
     protected void showGameWinner(Event event)
     {
-
+        monopolBoard.showMessageToPlayer(event.getEventMessage());
     }
 
     @Override
     protected void showAssetBoughtMsg(Event event)
     {
-
+        monopolBoard.showMessageToPlayer(event.getEventMessage());
     }
 
     @Override
     protected void showHouseBoughtMsg(Event event)
     {
-
+        monopolBoard.showMessageToPlayer(event.getEventMessage());
     }
 
     @Override
     protected void showLandedOnStartSquareMsg(Event event)
     {
-
+        monopolBoard.showMessageToPlayer(event.getEventMessage());
     }
 
     @Override
     protected void showPassedStartSquareMsg(Event event)
     {
-
+        monopolBoard.showMessageToPlayer(event.getEventMessage());
     }
 
     @Override
     protected void showPaymentMsg(Event event)
     {
-
+        monopolBoard.showMessageToPlayer(event.getEventMessage());
     }
 
     @Override
     protected void showPlayerLostMsg(Event event)
     {
-
+        monopolBoard.showMessageToPlayer(event.getEventMessage());
     }
 
     @Override
     protected void showPlayerResignMsg(Event event)
     {
-
+         monopolBoard.showMessageToPlayer(event.getEventMessage());
     }
 
     @Override
     protected void showUsedOutOfJailCardMsg(Event event)
     {
-
+        monopolBoard.showMessageToPlayer(event.getEventMessage());
     }
 
     @Override
     protected void showSurpriseCardMsg(Event event)
     {
-
+        monopolBoard.showMessageToPlayer(event.getEventMessage());
     }
 
     @Override
     protected void showWarrantCardMsg(Event event)
     {
-
+        monopolBoard.showMessageToPlayer(event.getEventMessage());
     }
 
     @Override
     protected void showOutOfJailCard(Event event)
     {
-
+        monopolBoard.showMessageToPlayer(event.getEventMessage());
     }
 
     @Override
     protected void showGoToJailMsg(Event event)
     {
-
+        monopolBoard.showMessageToPlayer(event.getEventMessage());
     }
 
     public static Boolean isNewGameRequired()

@@ -44,7 +44,7 @@ public abstract class View
 
     public void showEvents(Event[] events)
     {
-        Arrays.stream(events).forEach(this::showEvent);
+        Arrays.stream(events).forEach((event) -> this.showEvent(event));
     }
 
     private void showEvent(Event event)

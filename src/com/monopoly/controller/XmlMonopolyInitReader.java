@@ -75,7 +75,7 @@ public class XmlMonopolyInitReader implements MonopolyInitReader
     public static final String PARKING                              = "parkingSquare";
     public static final String GO_TO_JAIL                           = "gotoJailSquare";
     public static final String XSD_FILE_PATH                        = Utils
-            .getAbsolutePath(XmlMonopolyInitReader.class, "/com/monopoly/res/monopolyConfig/monopoly_config.xsd");
+            .getAbsolutePath(XmlMonopolyInitReader.class, "configs/monopoly_config.xsd");
     public static final String GO_TO_CARD_DESTINATION               = "to";
     public static final String START_SURPRISE_DESTINATION           = "START";
     public static final String NEXT_SURPRISE_DESTINATION            = "NEXT_SURPRISE";
@@ -256,7 +256,7 @@ public class XmlMonopolyInitReader implements MonopolyInitReader
 
     private void validateXMLAgainstXSD()
     {
-        if (Files.exists(Paths.get(XSD_FILE_PATH)) && !Utils.validateXMLAgainstXSD(xmlFilePath, XSD_FILE_PATH))
+        if (!Utils.validateXMLAgainstXSD(getClass(), xmlFilePath, XSD_FILE_PATH))
         {
             throw new CouldNotReadMonopolyXML("Validation against the XSD failed. The xml's format is wrong");
         }
@@ -530,7 +530,7 @@ public class XmlMonopolyInitReader implements MonopolyInitReader
     {
         try
         {
-            return builder.parse(xmlFilePath);
+            return builder.parse(getClass().getResourceAsStream(xmlFilePath));
         } catch (SAXException | IOException e)
         {
             throw new CouldNotReadMonopolyXML(e.getMessage());

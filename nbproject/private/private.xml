@@ -17,9 +17,15 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/JavaProjects/MonopolBoard/src/monopolyBoard/css/board.css</file>
-            <file>file:/C:/JavaProjects/MonopolBoard/src/monopolyBoard/scenes/init/BoardSceneController.java</file>
-            <file>file:/C:/JavaProjects/MonopolBoard/src/MonopolBoard.java</file>
+            <file>file:/C:/JavaProjects/MonopolyGameFX/src/com/monopoly/view/playerDescisions/PlayerBuyAssetDecision.java</file>
+            <file>file:/C:/JavaProjects/MonopolyGameFX/src/com/monopoly/utils/Utils.java</file>
+            <file>file:/C:/JavaProjects/MonopolyGameFX/src/com/monopoly/view/guiView/GuiView.java</file>
+            <file>file:/C:/JavaProjects/MonopolyGameFX/src/com/monopoly/view/playerDescisions/PlayerResign.java</file>
+            <file>file:/C:/JavaProjects/MonopolyGameFX/src/com/monopoly/res/monopolyConfig/monopoly_config.xml</file>
+            <file>file:/C:/JavaProjects/MonopolyGameFX/src/com/monopoly/view/View.java</file>
+            <file>file:/C:/JavaProjects/MonopolyGameFX/src/com/monopoly/res/monopolyConfig/monopoly_config.xsd</file>
+            <file>file:/C:/JavaProjects/MonopolyGameFX/src/com/monopoly/view/guiView/MonopolBoard.java</file>
+            <file>file:/C:/JavaProjects/MonopolyGameFX/src/com/monopoly/view/guiView/controllers/GetNamesSceneController.java</file>
         </group>
     </open-files>
 </project-private>

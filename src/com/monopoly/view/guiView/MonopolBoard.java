@@ -5,6 +5,7 @@ import com.monopoly.logic.engine.MonopolyEngine;
 import com.monopoly.view.guiView.controllers.BoardSceneController;
 import com.monopoly.view.guiView.controllers.GameInitSceneController;
 import com.monopoly.view.guiView.controllers.GetNamesSceneController;
+import com.monopoly.view.playerDescisions.PlayerBuyAssetDecision;
 
 import java.awt.geom.IllegalPathStateException;
 import java.io.File;
@@ -31,6 +32,7 @@ public class MonopolBoard extends Application {
     private int humanPlayers;
     private int computerPlayers;
     private List<String> humanPlayersNames = new ArrayList<>();
+    private BoardSceneController boardSceneController = null;
 
     @Override
     public void start(Stage primaryStage)
@@ -101,7 +103,7 @@ public class MonopolBoard extends Application {
     {
         FXMLLoader getNamesFXMLLoader = getFXMLLoader(BOARD_SCENE_FXML_PATH);
         Parent root = getRoot(getNamesFXMLLoader);
-        BoardSceneController boardSceneController = getNamesFXMLLoader.getController();
+        boardSceneController = getNamesFXMLLoader.getController();
         
         boardSceneController.setPlayers(names, humanPlayers, computerPlayers);
         primaryStage.setScene(new Scene(root));
@@ -154,7 +156,8 @@ public class MonopolBoard extends Application {
 
     private void startController()
     {
-        Controller controller = new Controller(new GuiView(this), new MonopolyEngine());
+        GuiView guiView = new GuiView(this);
+        Controller controller = new Controller(guiView, new MonopolyEngine());
         controller.play();
     }
 
@@ -162,4 +165,26 @@ public class MonopolBoard extends Application {
     {
         return humanPlayersNames;
     }
+        
+    public void showMessageToPlayer(String eventMessage) 
+    {
+        if(boardSceneController != null)
+        {
+            boardSceneController.showMessage(eventMessage);
+        }
+    }
+    
+    public void movePlayer(int cell, String playerName) 
+    {
+        if(boardSceneController != null)
+        {
+            boardSceneController.movePlayerIcon(cell, playerName);
+        }
+    }
+
+    void promtPlayerToBuy(String eventMessage, PlayerBuyAssetDecision playersDecision, int eventId) 
+    {
+        boardSceneController.promtPlayer(eventMessage, playersDecision, eventId);
+    }
+
 }
