@@ -20,6 +20,7 @@ public class Controller
     public static       int    DUMMY_PLAYER_ID      = 1;
     public static       String DEFAULT_XML_PATH             = Utils
            .getAbsolutePath(XmlMonopolyInitReader.class, "configs/monopoly_config.xml");
+    private Event[] events;
 
     public Controller(View view, MonopolyEngine engine)
     {
@@ -38,7 +39,17 @@ public class Controller
     public void play()
     {
         initGame();
-        Event[] events = engine.getEvents(DUMMY_PLAYER_ID, lastEvent);
+        runEventsLoop();
+    }
+    
+    public void continueGameAfterPromt()
+    {
+        runEventsLoop();
+    }
+    
+    private void runEventsLoop() 
+    {
+        events = engine.getEvents(DUMMY_PLAYER_ID, lastEvent);
         while (events.length != 0)
         {
             lastEvent = events[events.length - 1].getEventID();
@@ -49,7 +60,7 @@ public class Controller
             events = engine.getEvents(DUMMY_PLAYER_ID, lastEvent);
         }
     }
-
+        
     private void initGame()
     {
         initBoard();
@@ -98,6 +109,7 @@ public class Controller
     private void buy(int playerID, int eventID, boolean answer)
     {
         engine.buy(playerID, eventID, answer);
+        continueGameAfterPromt();
     }
 
     private void resign(int playerID)

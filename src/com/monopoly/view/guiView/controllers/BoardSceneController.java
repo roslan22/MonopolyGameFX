@@ -59,12 +59,14 @@ public class BoardSceneController implements Initializable {
     @FXML
     private void onYesClicked()
     {
+        hidePromtPane();
         playerBuyAssetDecision.onAnswer(waitingForAnswerEventId, true);
     }
     
     @FXML
     private void onNoClicked()
     {
+        hidePromtPane();
         playerBuyAssetDecision.onAnswer(waitingForAnswerEventId, false);
     }
     
@@ -253,5 +255,16 @@ public class BoardSceneController implements Initializable {
         this.playerBuyAssetDecision = playersDecision;
         textAreaPromt.setText(text);
         this.waitingForAnswerEventId = eventID;
+        showPromtPane();
+    }
+
+    private void hidePromtPane() 
+    {
+      promtPane.setVisible(false);
+    }
+    
+    private void showPromtPane()
+    {
+      promtPane.setVisible(true);
     }
 }
