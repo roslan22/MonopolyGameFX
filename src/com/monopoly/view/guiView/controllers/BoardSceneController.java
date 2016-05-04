@@ -237,7 +237,7 @@ public class BoardSceneController implements Initializable {
         return currentCellNumber == 0 || currentCellNumber == 9 || currentCellNumber == 18 || currentCellNumber == 27;
     }
 
-    public void movePlayerIcon(int cell, String PlayerName) 
+    public void movePlayerIcon(int cell, String PlayerName)
     {
         Node playerIcon = playersPlaceOnBoard.get(PlayerName);
         
@@ -245,7 +245,6 @@ public class BoardSceneController implements Initializable {
         {            
             addPlayerIconToBoard(cell, playerIcon);
         }
-        
     }
 
     private void addPlayerIconToBoard(int cell, Node playerIcon) {

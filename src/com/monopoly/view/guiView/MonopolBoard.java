@@ -1,6 +1,7 @@
 package com.monopoly.view.guiView;
 
 import com.monopoly.controller.Controller;
+import com.monopoly.controller.XmlMonopolyInitReader;
 import com.monopoly.logic.engine.MonopolyEngine;
 import com.monopoly.view.guiView.controllers.BoardSceneController;
 import com.monopoly.view.guiView.controllers.GameInitSceneController;
@@ -65,7 +66,7 @@ public class MonopolBoard extends Application {
         primaryStage.setScene(new Scene(getRoot(gameInitXMLLoader)));
 
         GameInitSceneController gameInitController = gameInitXMLLoader.getController();
-        gameInitController.setXmlValidator(xml -> false);
+        gameInitController.setXmlValidator(xml -> XmlMonopolyInitReader.validateXMLAgainstXSD(xml, XmlMonopolyInitReader.XSD_FILE_PATH));
         gameInitController.setNextListener(() -> endGameInit(gameInitController));
         primaryStage.show();
     }
@@ -182,7 +183,7 @@ public class MonopolBoard extends Application {
         }
     }
 
-    void promtPlayerToBuy(String eventMessage, PlayerBuyAssetDecision playersDecision, int eventId) 
+    void promptPlayerToBuy(String eventMessage, PlayerBuyAssetDecision playersDecision, int eventId)
     {
         boardSceneController.promtPlayer(eventMessage, playersDecision, eventId);
     }

@@ -55,8 +55,8 @@ public class GuiView extends View
     @Override
     protected void promptPlayerToBuy(Event event)
     {
-      monopolBoard.promtPlayerToBuy(event.getEventMessage(), playerBuyAssetDecision, 
-              event.getEventID());
+      monopolBoard.promptPlayerToBuy(event.getEventMessage(), playerBuyAssetDecision,
+                                     event.getEventID());
     }
 
     @Override

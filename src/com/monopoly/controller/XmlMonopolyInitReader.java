@@ -24,7 +24,6 @@ import com.monopoly.logic.model.cell.Parking;
 import com.monopoly.logic.model.cell.PropertyGroup;
 import com.monopoly.logic.model.cell.RoadStart;
 import com.monopoly.logic.model.cell.SurpriseCell;
-import com.monopoly.utils.Utils;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -32,17 +31,25 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Files;
+import java.io.InputStream;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 
 public class XmlMonopolyInitReader implements MonopolyInitReader
 {
@@ -114,6 +121,41 @@ public class XmlMonopolyInitReader implements MonopolyInitReader
     public XmlMonopolyInitReader(String xmlFilePath)
     {
         this.xmlFilePath = xmlFilePath;
+    }
+
+    public static boolean validateXMLAgainstXSD(String xmlResourcePath, String xsdResourcePath)
+    {
+        if (Paths.get(xmlResourcePath).isAbsolute())
+            return validateXMLAgainstXSD(new File(xmlResourcePath), xsdResourcePath);
+        return validateXMLAgainstXSD(XmlMonopolyInitReader.class.getResourceAsStream(xsdResourcePath),
+                                     XmlMonopolyInitReader.class.getResourceAsStream(xmlResourcePath));
+    }
+
+    public static boolean validateXMLAgainstXSD(File xml, String xsdResourcePath)
+    {
+        try
+        {
+            return validateXMLAgainstXSD(XmlMonopolyInitReader.class.getResourceAsStream(xsdResourcePath),
+                                         new FileInputStream(xml));
+        } catch (FileNotFoundException e)
+        {
+            return false;
+        }
+    }
+
+    public static boolean validateXMLAgainstXSD(InputStream xsdInputStream, InputStream xmlInputStream)
+    {
+        try
+        {
+            SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            Schema schema = factory.newSchema(new StreamSource(xsdInputStream));
+            Validator validator = schema.newValidator();
+            validator.validate(new StreamSource(xmlInputStream));
+            return true;
+        } catch (Exception ex)
+        {
+            return false;
+        }
     }
 
     @Override
@@ -255,7 +297,7 @@ public class XmlMonopolyInitReader implements MonopolyInitReader
 
     private void validateXMLAgainstXSD()
     {
-        if (!Utils.validateXMLAgainstXSD(getClass(), xmlFilePath, XSD_FILE_PATH))
+        if (!validateXMLAgainstXSD(xmlFilePath, XSD_FILE_PATH))
         {
             throw new CouldNotReadMonopolyXML("Validation against the XSD failed. The xml's format is wrong");
         }
@@ -529,6 +571,8 @@ public class XmlMonopolyInitReader implements MonopolyInitReader
     {
         try
         {
+            if (Paths.get(xmlFilePath).isAbsolute())
+                return builder.parse(new FileInputStream(new File(xmlFilePath)));
             return builder.parse(getClass().getResourceAsStream(xmlFilePath));
         } catch (SAXException | IOException e)
         {
