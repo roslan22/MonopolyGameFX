@@ -12,7 +12,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
@@ -73,7 +72,7 @@ public class BoardSceneController implements Initializable {
     @FXML
     private void onResignClicked()
     {
-        //super.playerBuyAssetDecision
+        //TODO: Implement
     }
     
     @Override
@@ -111,13 +110,19 @@ public class BoardSceneController implements Initializable {
     private HBox createPlayerHbox(int playerId, String name) {
         ImageView playerIcon;
         HBox hbox = new HBox();
+        playerIcon = setPropertiesToPlayerIcon(playerId);
+        hbox.getChildren().add(playerIcon);
+        hbox.getChildren().add(new Label(name));
+        return hbox;
+    }
+
+    private ImageView setPropertiesToPlayerIcon(int playerId) {
+        ImageView playerIcon;
         playerIcon = new ImageView();
         playerIcon.setId("player" + playerId);
         playerIcon.setFitHeight(30);
         playerIcon.setFitWidth(30);
-        hbox.getChildren().add(playerIcon);
-        hbox.getChildren().add(new Label(name));
-        return hbox;
+        return playerIcon;
     }
 
     private void addHumanPlayers() 
@@ -210,20 +215,22 @@ public class BoardSceneController implements Initializable {
     {
         Pane currentPane;
         currentPane = new Pane();
-        if(isCornerCell(currentCellNumber))
-        {
-           currentPane.setId("cornerCell");
-        }
-        else
-        {
-           currentPane.setId("cell");
-        }
+        
+        setCellId(currentCellNumber, currentPane);
         boardCells.add(currentCellNumber, currentPane);
         gridPaneMain.add(currentPane, from, to);
         currentPane.getChildren().add(new Label(String.valueOf(currentCellNumber)));
         currentCellNumber++;
         
         return currentCellNumber;
+    }
+
+    private void setCellId(int currentCellNumber, Pane currentPane) 
+    {
+        if(isCornerCell(currentCellNumber))
+            currentPane.setId("cornerCell");
+        else
+            currentPane.setId("cell");
     }
 
     private static boolean isCornerCell(int currentCellNumber) {
@@ -236,12 +243,16 @@ public class BoardSceneController implements Initializable {
         
         if(playerIcon != null)
         {            
-          if(!boardCells.get(cell).getChildren().contains(playerIcon))
-          {
-            boardCells.get(cell).getChildren().add(playerIcon);       
-          }
+            addPlayerIconToBoard(cell, playerIcon);
         }
         
+    }
+
+    private void addPlayerIconToBoard(int cell, Node playerIcon) {
+        if(!boardCells.get(cell).getChildren().contains(playerIcon))
+        {
+            boardCells.get(cell).getChildren().add(playerIcon);
+        }
     }
     
     public void showMessage(String message)

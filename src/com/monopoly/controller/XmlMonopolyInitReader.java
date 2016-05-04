@@ -74,8 +74,7 @@ public class XmlMonopolyInitReader implements MonopolyInitReader
     public static final String JAIL                                 = "jailSlashFreeSpaceSquare";
     public static final String PARKING                              = "parkingSquare";
     public static final String GO_TO_JAIL                           = "gotoJailSquare";
-    public static final String XSD_FILE_PATH                        = Utils
-            .getAbsolutePath(XmlMonopolyInitReader.class, "configs/monopoly_config.xsd");
+    public static final String XSD_FILE_PATH                        = "configs/monopoly_config.xsd";
     public static final String GO_TO_CARD_DESTINATION               = "to";
     public static final String START_SURPRISE_DESTINATION           = "START";
     public static final String NEXT_SURPRISE_DESTINATION            = "NEXT_SURPRISE";

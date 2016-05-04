@@ -11,15 +11,14 @@ import java.util.List;
 
 public class Controller
 {
-    private View view;
-    private Engine      engine;
+    private View   view;
+    private Engine engine;
     private int lastEvent = 0;
 
     public static       String GAME_NAME            = "Monopoly";
     public static final int    MAXIMUM_GAME_PLAYERS = 6;
     public static       int    DUMMY_PLAYER_ID      = 1;
-    public static       String DEFAULT_XML_PATH             = Utils
-           .getAbsolutePath(XmlMonopolyInitReader.class, "configs/monopoly_config.xml");
+    public static       String DEFAULT_XML_PATH  = "configs/monopoly_config.xml";
     private Event[] events;
 
     public Controller(View view, MonopolyEngine engine)
