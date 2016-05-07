@@ -83,6 +83,7 @@ public class Controller
         try
         {
             engine.initializeBoard(new XmlMonopolyInitReader(xmlPath));
+            view.setCellsNames(engine.getBoardCellsNames());
             System.out.println("Configurations XML loaded from: " + xmlPath);
         } catch (CouldNotReadMonopolyInitReader couldNotReadMonopolyInitReader)
         {

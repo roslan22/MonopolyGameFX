@@ -179,13 +179,17 @@ public class MonopolBoard extends Application {
     {
         if(boardSceneController != null)
         {
-            boardSceneController.movePlayerIcon(cell, playerName);
+            boardSceneController.movePlayer(cell, playerName);
         }
     }
 
     void promptPlayerToBuy(String eventMessage, PlayerBuyAssetDecision playersDecision, int eventId)
     {
         boardSceneController.promtPlayer(eventMessage, playersDecision, eventId);
+    }
+
+    void setCellsNames(List<String> boardCellsNames) {
+        boardSceneController.initCellsNames(boardCellsNames);
     }
 
 }

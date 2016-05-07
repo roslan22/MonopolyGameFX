@@ -6,11 +6,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.animation.Timeline;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -43,17 +45,18 @@ public class BoardSceneController implements Initializable {
     public final static int LAST_COLUMN = 9;
     public final static int MAX_PLAYERS_NUM = 6;
     public final static int START_PLACE = 0;
-    
+    public final static int MAX_BOARD_CELLS = 36;
+
     private SimpleBooleanProperty finishedInit;
     private ArrayList<Pane> boardCells = new ArrayList<>();
-    private HashMap<String, Node> playersPlaceOnBoard = new HashMap<>();
+    private HashMap<String, PlayersPosition> playersPlaceOnBoard = new HashMap<>();    
     private List<String> humanPlayerNames;
     private int computerPlayers = 0;
     private int nextPlayerPlaceIndex = 1;
-    public static final ObservableList allGamePlayers = 
-        FXCollections.observableArrayList();
+    public static final ObservableList allGamePlayers = FXCollections.observableArrayList();
     private PlayerBuyAssetDecision playerBuyAssetDecision;
     private int waitingForAnswerEventId = 0;
+    private Timeline timeline = new Timeline();
     
     @FXML
     private void onYesClicked()
@@ -79,7 +82,6 @@ public class BoardSceneController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         finishedInit = new SimpleBooleanProperty(false);
         inintBoardCells();
-        boardCells.get(0).getChildren().add(new Label("START"));
     }   
     
     public void setPlayers(List<String> playerNames, int humanPlayers, int computerPlayers)
@@ -107,16 +109,19 @@ public class BoardSceneController implements Initializable {
         }
     }
 
-    private HBox createPlayerHbox(int playerId, String name) {
+    private HBox createPlayerHbox(int playerId, String name) 
+    {
         ImageView playerIcon;
         HBox hbox = new HBox();
         playerIcon = setPropertiesToPlayerIcon(playerId);
         hbox.getChildren().add(playerIcon);
         hbox.getChildren().add(new Label(name));
+        
         return hbox;
     }
 
-    private ImageView setPropertiesToPlayerIcon(int playerId) {
+    private ImageView setPropertiesToPlayerIcon(int playerId) 
+    {
         ImageView playerIcon;
         playerIcon = new ImageView();
         playerIcon.setId("player" + playerId);
@@ -147,8 +152,10 @@ public class BoardSceneController implements Initializable {
     
     private void placePlayerOnBoard(String playerName, int placeIndex)
     {
-        playersPlaceOnBoard.put(playerName, createPlayerIcon(nextPlayerPlaceIndex));
-        boardCells.get(placeIndex).getChildren().add(playersPlaceOnBoard.get(playerName));
+        playersPlaceOnBoard.put(playerName, 
+                new PlayersPosition(placeIndex, createPlayerIcon(nextPlayerPlaceIndex)));
+        Node playerIcon = playersPlaceOnBoard.get(playerName).getPlayerIcon();
+        boardCells.get(placeIndex).getChildren().add(playerIcon);
         nextPlayerPlaceIndex++;
     }
 
@@ -215,11 +222,14 @@ public class BoardSceneController implements Initializable {
     {
         Pane currentPane;
         currentPane = new Pane();
+        HBox hbox = new HBox();
+        hbox.setAlignment(Pos.CENTER);
+        hbox.setSpacing(1);
         
-        setCellId(currentCellNumber, currentPane);
-        boardCells.add(currentCellNumber, currentPane);
-        gridPaneMain.add(currentPane, from, to);
-        currentPane.getChildren().add(new Label(String.valueOf(currentCellNumber)));
+        setCellId(currentCellNumber, hbox);
+        boardCells.add(currentCellNumber, hbox);
+        gridPaneMain.add(hbox, from, to);
+        //vbox.getChildren().add(new Label(String.valueOf(currentCellNumber)));
         currentCellNumber++;
         
         return currentCellNumber;
@@ -237,20 +247,43 @@ public class BoardSceneController implements Initializable {
         return currentCellNumber == 0 || currentCellNumber == 9 || currentCellNumber == 18 || currentCellNumber == 27;
     }
 
-    public void movePlayerIcon(int cell, String PlayerName)
-    {
-        Node playerIcon = playersPlaceOnBoard.get(PlayerName);
+    public void movePlayer(int cell, String PlayerName)
+    {   
+        PlayersPosition playerPos = playersPlaceOnBoard.get(PlayerName);
+        Node playerIcon = playerPos.getPlayerIcon();
+        int currentCell = playerPos.getCell();
+        int cellToMove = 0;
         
         if(playerIcon != null)
-        {            
-            addPlayerIconToBoard(cell, playerIcon);
-        }
+        {   
+            cellToMove = calculateCellToMove(cell,currentCell);
+            addPlayerIconToBoard(cellToMove, playerIcon);
+            setPlayerPosition(playerPos, cellToMove, playerIcon);
+        }      
+    }
+
+    private void setPlayerPosition(PlayersPosition playerPos, int cellToMove, Node playerIcon) {
+        playerPos.setCell(cellToMove);
+        playerPos.setPlayerIcon(playerIcon);
     }
 
     private void addPlayerIconToBoard(int cell, Node playerIcon) {
+        
+        removePlayerIconFromBoard(playerIcon);
+        
         if(!boardCells.get(cell).getChildren().contains(playerIcon))
         {
             boardCells.get(cell).getChildren().add(playerIcon);
+        }
+    }
+
+    private void removePlayerIconFromBoard(Node playerIcon) {
+        for(Pane boardCellPane : boardCells)
+        {
+            if(boardCellPane.getChildren().contains(playerIcon))
+            {
+                boardCellPane.getChildren().remove(playerIcon);
+            }
         }
     }
     
@@ -276,5 +309,26 @@ public class BoardSceneController implements Initializable {
     private void showPromtPane()
     {
       promtPane.setVisible(true);
+    }
+
+    public void initCellsNames(List<String> boardCellsNames) {
+        Label cellNameLabel;
+        
+        for(int i=0; i<boardCellsNames.size(); i++)
+        {
+            cellNameLabel = new Label(boardCellsNames.get(i));
+            cellNameLabel.setWrapText(true);
+            boardCells.get(i).getChildren().add(cellNameLabel);
+        }
+    }
+
+    private int calculateCellToMove(int cell, int currentCell) 
+    {
+        if(cell + currentCell >= MAX_BOARD_CELLS)
+        {
+            return (cell + currentCell - MAX_BOARD_CELLS);
+        }
+        
+        return cell + currentCell;
     }
 }

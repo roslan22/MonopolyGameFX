@@ -267,4 +267,9 @@ public class ConsoleView extends View
         return path;
     }
 
+    @Override
+    public void setCellsNames(List<String> boardCellsNames) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

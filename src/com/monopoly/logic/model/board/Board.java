@@ -253,6 +253,19 @@ public class Board
         return cells.size();
     }
 
+    public List<String> getCellsNames() 
+    {
+        List<String> cellNames = new ArrayList<>();
+        String cellName;
+        
+        for(int i=0; i < cells.size(); i++)
+        {
+            cellName = cells.get(i).getCellName();
+            cellNames.add(cellName);
+        }
+        return cellNames;
+    }
+
     public static class PlayerNotOnBoard extends RuntimeException
     {
     }

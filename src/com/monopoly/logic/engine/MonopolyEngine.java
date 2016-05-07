@@ -337,4 +337,9 @@ public class MonopolyEngine implements Engine
     {
         void buy(boolean buyDecision);
     }
+    
+    public List<String> getBoardCellsNames()
+    {
+        return board.getCellsNames();
+    }
 }

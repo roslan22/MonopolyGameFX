@@ -151,7 +151,10 @@ public abstract class View
 
     protected abstract void showGoToJailMsg(Event event);
 
+    public abstract void setCellsNames(List<String> boardCellsNames);
+
     private void unknownEvent()
     {
     }
+
 }

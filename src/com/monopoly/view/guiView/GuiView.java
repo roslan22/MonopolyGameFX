@@ -76,6 +76,7 @@ public class GuiView extends View
     protected void showDiceRollResult(Event event)
     {
         monopolBoard.showMessageToPlayer(event.getEventMessage());
+        System.out.println(event.getPlayerName() + " move " + (event.getFirstDiceResult() + event.getSecondDiceResult()));
         monopolBoard.movePlayer(event.getFirstDiceResult() + event.getSecondDiceResult(),
                 event.getPlayerName());
     }
@@ -161,5 +162,11 @@ public class GuiView extends View
     public static Boolean isNewGameRequired()
     {
         return false;
+    }
+
+    @Override
+    public void setCellsNames(List<String> boardCellsNames) 
+    {
+        monopolBoard.setCellsNames(boardCellsNames);
     }
 }
