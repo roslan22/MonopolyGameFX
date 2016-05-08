@@ -49,7 +49,8 @@ public class BoardSceneController implements Initializable {
 
     private SimpleBooleanProperty finishedInit;
     private ArrayList<Pane> boardCells = new ArrayList<>();
-    private HashMap<String, PlayersPosition> playersPlaceOnBoard = new HashMap<>();    
+    private HashMap<String, PlayersPosition> playersPlaceOnBoard = new HashMap<>();   
+    private HashMap<String, String> playerNamesAndIds = new HashMap<>();
     private List<String> humanPlayerNames;
     private int computerPlayers = 0;
     private int nextPlayerPlaceIndex = 1;
@@ -99,20 +100,20 @@ public class BoardSceneController implements Initializable {
     }
 
     private void createRightTopPlayersMenu() {
-        int playerId=1;
         
         for(String name : playersPlaceOnBoard.keySet())
         {
-            HBox hbox = createPlayerHbox(playerId, name);
+            HBox hbox = createPlayerHbox(name);
             vboxPlayers.getChildren().add(hbox);
-            playerId++;
         }
     }
 
-    private HBox createPlayerHbox(int playerId, String name) 
+    private HBox createPlayerHbox(String name) 
     {
         ImageView playerIcon;
         HBox hbox = new HBox();
+        String playerId = playerNamesAndIds.get(name);
+        
         playerIcon = setPropertiesToPlayerIcon(playerId);
         hbox.getChildren().add(playerIcon);
         hbox.getChildren().add(new Label(name));
@@ -120,11 +121,11 @@ public class BoardSceneController implements Initializable {
         return hbox;
     }
 
-    private ImageView setPropertiesToPlayerIcon(int playerId) 
+    private ImageView setPropertiesToPlayerIcon(String playerId) 
     {
         ImageView playerIcon;
         playerIcon = new ImageView();
-        playerIcon.setId("player" + playerId);
+        playerIcon.setId(playerId);
         playerIcon.setFitHeight(30);
         playerIcon.setFitWidth(30);
         return playerIcon;
@@ -152,17 +153,24 @@ public class BoardSceneController implements Initializable {
     
     private void placePlayerOnBoard(String playerName, int placeIndex)
     {
-        playersPlaceOnBoard.put(playerName, 
-                new PlayersPosition(placeIndex, createPlayerIcon(nextPlayerPlaceIndex)));
+        String playerID; 
+        playerID = "player" + nextPlayerPlaceIndex;
+        
+        playersPlaceOnBoard.put(playerName, createPlayerPosition(placeIndex, playerID));
+        playerNamesAndIds.put(playerName, playerID);
         Node playerIcon = playersPlaceOnBoard.get(playerName).getPlayerIcon();
         boardCells.get(placeIndex).getChildren().add(playerIcon);
         nextPlayerPlaceIndex++;
     }
 
-    private ImageView createPlayerIcon(int playerIndex) 
+    private PlayersPosition createPlayerPosition(int placeIndex, String playerID) {
+        return new PlayersPosition(placeIndex, createPlayerIcon(playerID));
+    }
+
+    private ImageView createPlayerIcon(String playerID) 
     {
         ImageView playerIcon = new ImageView();
-        playerIcon.setId("player" + playerIndex);
+        playerIcon.setId(playerID);
         playerIcon.setFitHeight(30);
         playerIcon.setFitWidth(30);
         return playerIcon;
@@ -314,7 +322,7 @@ public class BoardSceneController implements Initializable {
     public void initCellsNames(List<String> boardCellsNames) {
         Label cellNameLabel;
         
-        for(int i=0; i<boardCellsNames.size(); i++)
+        for(int i=0; i < boardCellsNames.size(); i++)
         {
             cellNameLabel = new Label(boardCellsNames.get(i));
             cellNameLabel.setWrapText(true);
