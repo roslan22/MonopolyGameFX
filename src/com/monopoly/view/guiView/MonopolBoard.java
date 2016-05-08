@@ -13,12 +13,18 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.beans.value.ObservableObjectValue;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 
 public class MonopolBoard extends Application {
@@ -180,6 +186,7 @@ public class MonopolBoard extends Application {
         if(boardSceneController != null)
         {
             boardSceneController.movePlayer(cell, playerName);
+            System.out.println("Currently in javafx application thread:" + Thread.currentThread().getId());
         }
     }
 
