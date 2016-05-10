@@ -1,22 +1,20 @@
 package com.monopoly.view.guiView.controllers;
 
 import com.monopoly.view.playerDescisions.PlayerBuyAssetDecision;
+import com.sun.javafx.font.t2k.T2KFactory;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.ResourceBundle;
 import java.util.TreeMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
 import javafx.animation.SequentialTransition;
 import javafx.animation.Timeline;
-import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -27,13 +25,13 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
-import javax.swing.text.StyleConstants;
 
 public class BoardSceneController implements Initializable {
     
@@ -62,7 +60,7 @@ public class BoardSceneController implements Initializable {
 
     private SimpleBooleanProperty finishedInit;
     private ArrayList<Pane> boardCells = new ArrayList<>();
-    private Map<String, PlayersPosition> playersPlaceOnBoard = new TreeMap<>();   
+    private Map<String, PlayerPosition> playersPlaceOnBoard = new TreeMap<>();   
     private HashMap<String, String> playerNamesAndIds = new HashMap<>();
     private List<String> humanPlayerNames;
     private int computerPlayers = 0;
@@ -73,6 +71,7 @@ public class BoardSceneController implements Initializable {
     private Timeline timeline = new Timeline();
     SequentialTransition seqTransition = new SequentialTransition();
     private boolean isAnimationsFinished = true;
+    private Queue<PlayerPosition> playersMoves = new LinkedList<PlayerPosition>();
     
     @FXML
     private void onYesClicked()
@@ -178,8 +177,8 @@ public class BoardSceneController implements Initializable {
         nextPlayerPlaceIndex++;
     }
 
-    private PlayersPosition createPlayerPosition(int placeIndex, String playerID) {
-        return new PlayersPosition(placeIndex, createPlayerIcon(playerID));
+    private PlayerPosition createPlayerPosition(int placeIndex, String playerID) {
+        return new PlayerPosition(placeIndex, createPlayerIcon(playerID));
     }
 
     private ImageView createPlayerIcon(String playerID) 
@@ -243,8 +242,6 @@ public class BoardSceneController implements Initializable {
     
     private int addNewPane(int currentCellNumber, int from, int to) 
     {
-        Pane currentPane;
-        currentPane = new Pane();
         HBox hbox = new HBox();
         hbox.setAlignment(Pos.CENTER);
         hbox.setSpacing(1);
@@ -252,7 +249,7 @@ public class BoardSceneController implements Initializable {
         setCellId(currentCellNumber, hbox);
         boardCells.add(currentCellNumber, hbox);
         gridPaneMain.add(hbox, from, to);
-        //vbox.getChildren().add(new Label(String.valueOf(currentCellNumber)));
+        
         currentCellNumber++;
         
         return currentCellNumber;
@@ -272,7 +269,7 @@ public class BoardSceneController implements Initializable {
 
     public void movePlayer(int cell, String PlayerName)
     {   
-        PlayersPosition playerPos = playersPlaceOnBoard.get(PlayerName);
+        PlayerPosition playerPos = playersPlaceOnBoard.get(PlayerName);
         Node playerIcon = playerPos.getPlayerIcon();
         int currentCell = playerPos.getCell();
         int cellToMove = 0;
@@ -288,31 +285,27 @@ public class BoardSceneController implements Initializable {
         + "in scene thread: " + Thread.currentThread().getId());
     }
 
-    private void setPlayerPosition(PlayersPosition playerPos, int cellToMove, Node playerIcon) {
+    private void setPlayerPosition(PlayerPosition playerPos, int cellToMove, Node playerIcon) {
         playerPos.setCell(cellToMove);
         playerPos.setPlayerIcon(playerIcon);
     }
 
-    private void addPlayerIconToBoard(int cell, Node playerIcon) {
-        
-        removePlayerIconFromBoard(playerIcon);
-
-       
+    private void addPlayerIconToBoard(int cell, Node playerIcon) 
+    {    
+        removePlayerIconFromBoard(playerIcon);   
         if(!boardCells.get(cell).getChildren().contains(playerIcon))
         {
-            FadeTransition ft = createIconsFadeTransition(playerIcon);   
-            seqTransition.getChildren().add(ft);
-            boardCells.get(cell).getChildren().add(playerIcon);
-            playerIcon.setOpacity(0.0);
+            System.out.println("icon added");
+            playersMoves.add(new PlayerPosition(cell, playerIcon));
         }
 
     }
 
     private FadeTransition createIconsFadeTransition(Node playerIcon) {
         FadeTransition ft = new FadeTransition(Duration.millis(1000), playerIcon);
-        ft.setFromValue(0.0);
-        ft.setToValue(1.0);
-        ft.setCycleCount(0);
+        ft.setFromValue(1.0);
+        ft.setToValue(0.0);
+        ft.setCycleCount(1);
         ft.setAutoReverse(false);
         return ft;
     }
@@ -338,19 +331,35 @@ public class BoardSceneController implements Initializable {
         this.playerBuyAssetDecision = playersDecision;
         textAreaPromt.setText(text);
         this.waitingForAnswerEventId = eventID;
-        showPromtPane();
         startFadeAnimations();
     }
 
     private void startFadeAnimations() {
-        seqTransition.setCycleCount(1);
-        seqTransition.play();
-        isAnimationsFinished = false;
+        for(PlayerPosition playerMovePosition : playersMoves)
+        {
+            FadeTransition ft = createIconsFadeTransition(playerMovePosition.getPlayerIcon());
+            seqTransition.getChildren().add(ft);
+            ft.setOnFinished((EventHandler<ActionEvent>) (ActionEvent actionEvent) -> {
+                boardCells.get(playerMovePosition.getCell()).getChildren().add(playerMovePosition.getPlayerIcon());
+                playerMovePosition.getPlayerIcon().setOpacity(1.0);
+            });
+        }
         
-        seqTransition.onFinishedProperty().set((EventHandler<ActionEvent>) (ActionEvent actionEvent) -> {
-            seqTransition = new SequentialTransition();
-            isAnimationsFinished = true;
+        playersMoves.clear();
+        seqTransition.setCycleCount(1);
 
+        if(isAnimationsFinished)
+        {
+            seqTransition.play();
+            isAnimationsFinished = false;
+        }
+        
+        seqTransition.onFinishedProperty().set((EventHandler<ActionEvent>) (ActionEvent actionEvent) -> 
+        {
+              seqTransition = new SequentialTransition();
+              System.out.println("ok goood - seq animations finished");
+              isAnimationsFinished = true;
+              showPromtPane();
         });
     }
 
@@ -369,10 +378,17 @@ public class BoardSceneController implements Initializable {
         
         for(int i=0; i < boardCellsNames.size(); i++)
         {
-            cellNameLabel = new Label(boardCellsNames.get(i));
+            String cellName = boardCellsNames.get(i);
+            cellNameLabel = new Label(cellName);
+            createTooltipForCell(i);
             cellNameLabel.setWrapText(true);
             boardCells.get(i).getChildren().add(cellNameLabel);
         }
+    }
+
+    private void createTooltipForCell(int i) {
+        Tooltip tooltip = new Tooltip("here will be all information regarding this cell");
+        Tooltip.install(boardCells.get(i), tooltip);
     }
 
     private int calculateCellToMove(int cell, int currentCell) 

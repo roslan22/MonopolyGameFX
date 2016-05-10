@@ -6,7 +6,7 @@ import javafx.scene.Node;
  *
  * @author Ruslan
  */
-public class PlayersPosition {
+public class PlayerPosition {
     private int cell;
     private Node playerIcon;
 
@@ -22,7 +22,7 @@ public class PlayersPosition {
         this.cell = cell;
     }
     
-    public PlayersPosition(int cell, Node playerIcon) {
+    public PlayerPosition(int cell, Node playerIcon) {
         this.cell = cell;
         this.playerIcon = playerIcon;
     }
