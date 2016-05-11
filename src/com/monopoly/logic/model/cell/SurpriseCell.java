@@ -24,4 +24,10 @@ public class SurpriseCell extends CardCell
     {
         return CellType.SURPRISE_CELL;
     }
+
+    @Override
+    public String getCellName()
+    {
+        return "Surprise";
+    }
 }

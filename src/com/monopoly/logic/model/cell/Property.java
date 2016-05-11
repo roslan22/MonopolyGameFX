@@ -2,6 +2,8 @@ package com.monopoly.logic.model.cell;
 
 import com.monopoly.logic.model.player.Player;
 
+import javafx.scene.paint.Color;
+
 public abstract class Property extends Cell
 {
     protected String        name;
@@ -89,5 +91,23 @@ public abstract class Property extends Cell
     public String getCellName()
     {
         return getName();
+    }
+
+    @Override
+    public String getGroupName()
+    {
+        return getPropertyGroup().getName();
+    }
+
+    @Override
+    public String getOwnerName()
+    {
+        return isPropertyAvailable() ? "" : getOwner().getName();
+    }
+
+    @Override
+    public Color getGroupColor()
+    {
+        return getPropertyGroup().getColor();
     }
 }

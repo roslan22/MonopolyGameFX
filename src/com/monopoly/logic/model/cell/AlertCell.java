@@ -24,4 +24,10 @@ public class AlertCell extends CardCell
     {
         return CellType.ALERT_CELL;
     }
+
+    @Override
+    public String getCellName()
+    {
+        return "Warning";
+    }
 }

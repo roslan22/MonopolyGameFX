@@ -1,7 +1,9 @@
 package com.monopoly.view.guiView.controllers;
 
 import com.monopoly.view.playerDescisions.PlayerBuyAssetDecision;
-import com.sun.javafx.font.t2k.T2KFactory;
+
+import java.awt.geom.IllegalPathStateException;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,6 +13,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.ResourceBundle;
 import java.util.TreeMap;
+
 import javafx.animation.FadeTransition;
 import javafx.animation.SequentialTransition;
 import javafx.animation.Timeline;
@@ -18,15 +21,17 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -34,7 +39,11 @@ import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
 public class BoardSceneController implements Initializable {
-    
+
+    public static final String CELL_RIGHT_FXML = "cell_right.fxml";
+    public static final String CELL_LEFT_FXML = "cell_left.fxml";
+    public static final String CELL_FXML = "cell.fxml";
+    public static final String CELL_CORNER_FXML = "cell_corner.fxml";
     @FXML
     private GridPane gridPaneMain;
     
@@ -57,33 +66,34 @@ public class BoardSceneController implements Initializable {
     public final static int MAX_PLAYERS_NUM = 6;
     public final static int START_PLACE = 0;
     public final static int MAX_BOARD_CELLS = 36;
+    public static final ObservableList allGamePlayers = FXCollections.observableArrayList();
 
     private SimpleBooleanProperty finishedInit;
-    private ArrayList<Pane> boardCells = new ArrayList<>();
-    private Map<String, PlayerPosition> playersPlaceOnBoard = new TreeMap<>();   
-    private HashMap<String, String> playerNamesAndIds = new HashMap<>();
+    private List<Pane> boardCells = new ArrayList<>();
+    private Map<String, PlayerPosition> playersPlaceOnBoard = new TreeMap<>();
+    private Map<String, String> playerNamesAndIds = new HashMap<>();
     private List<String> humanPlayerNames;
     private int computerPlayers = 0;
     private int nextPlayerPlaceIndex = 1;
-    public static final ObservableList allGamePlayers = FXCollections.observableArrayList();
     private PlayerBuyAssetDecision playerBuyAssetDecision;
-    private int waitingForAnswerEventId = 0;
-    private Timeline timeline = new Timeline();
-    SequentialTransition seqTransition = new SequentialTransition();
-    private boolean isAnimationsFinished = true;
-    private Queue<PlayerPosition> playersMoves = new LinkedList<PlayerPosition>();
-    
+    private int                          waitingForAnswerEventId = 0;
+    private Timeline                     timeline                = new Timeline();
+    private SequentialTransition         seqTransition           = new SequentialTransition();
+    private boolean                      isAnimationsFinished    = true;
+    private Queue<PlayerPosition>        playersMoves            = new LinkedList<>();
+    private List<CellController> cellControllers         = new ArrayList<>();
+
     @FXML
     private void onYesClicked()
     {
-        hidePromtPane();
+        hidePromptPane();
         playerBuyAssetDecision.onAnswer(waitingForAnswerEventId, true);
     }
     
     @FXML
     private void onNoClicked()
     {
-        hidePromtPane();
+        hidePromptPane();
         playerBuyAssetDecision.onAnswer(waitingForAnswerEventId, false);
     }
     
@@ -96,7 +106,7 @@ public class BoardSceneController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         finishedInit = new SimpleBooleanProperty(false);
-        inintBoardCells();
+        initBoardCells();
     }   
     
     public void setPlayers(List<String> playerNames, int humanPlayers, int computerPlayers)
@@ -113,8 +123,9 @@ public class BoardSceneController implements Initializable {
         createRightTopPlayersMenu();
     }
 
-    private void createRightTopPlayersMenu() {
-        
+    private void createRightTopPlayersMenu()
+    {
+        vboxPlayers.getChildren().clear();
         for(String name : playersPlaceOnBoard.keySet())
         {
             HBox hbox = createPlayerHbox(name);
@@ -124,14 +135,10 @@ public class BoardSceneController implements Initializable {
 
     private HBox createPlayerHbox(String name) 
     {
-        ImageView playerIcon;
         HBox hbox = new HBox();
-        String playerId = playerNamesAndIds.get(name);
-        
-        playerIcon = setPropertiesToPlayerIcon(playerId);
-        hbox.getChildren().add(playerIcon);
+        hbox.getChildren().add(setPropertiesToPlayerIcon(playerNamesAndIds.get(name)));
         hbox.getChildren().add(new Label(name));
-        
+        hbox.getChildren().add(new Label(" has ₪0"));
         return hbox;
     }
 
@@ -194,7 +201,7 @@ public class BoardSceneController implements Initializable {
         return finishedInit;
     }
 
-    private void inintBoardCells() 
+    private void initBoardCells()
     {
        int currentCellNumber = 0;
        currentCellNumber = initBottomLineCells(currentCellNumber);
@@ -242,13 +249,14 @@ public class BoardSceneController implements Initializable {
     
     private int addNewPane(int currentCellNumber, int from, int to) 
     {
-        HBox hbox = new HBox();
-        hbox.setAlignment(Pos.CENTER);
-        hbox.setSpacing(1);
-        
-        setCellId(currentCellNumber, hbox);
-        boardCells.add(currentCellNumber, hbox);
-        gridPaneMain.add(hbox, from, to);
+        FlowPane flowPane = new FlowPane();
+        flowPane.setAlignment(Pos.CENTER);
+        flowPane.setMaxHeight(80);
+        flowPane.setMaxWidth(80);
+
+        setCellId(currentCellNumber, flowPane);
+        boardCells.add(currentCellNumber, flowPane);
+        gridPaneMain.add(flowPane, from, to);
         
         currentCellNumber++;
         
@@ -272,7 +280,7 @@ public class BoardSceneController implements Initializable {
         PlayerPosition playerPos = playersPlaceOnBoard.get(PlayerName);
         Node playerIcon = playerPos.getPlayerIcon();
         int currentCell = playerPos.getCell();
-        int cellToMove = 0;
+        int cellToMove;
         
         if(playerIcon != null)
         {   
@@ -295,7 +303,6 @@ public class BoardSceneController implements Initializable {
         removePlayerIconFromBoard(playerIcon);   
         if(!boardCells.get(cell).getChildren().contains(playerIcon))
         {
-            System.out.println("icon added");
             playersMoves.add(new PlayerPosition(cell, playerIcon));
         }
 
@@ -311,13 +318,7 @@ public class BoardSceneController implements Initializable {
     }
 
     private void removePlayerIconFromBoard(Node playerIcon) {
-        for(Pane boardCellPane : boardCells)
-        {
-            if(boardCellPane.getChildren().contains(playerIcon))
-            {
-                boardCellPane.getChildren().remove(playerIcon);
-            }
-        }
+        cellControllers.stream().forEach(c -> c.removePlayer(playerIcon));
     }
     
     public void showMessage(String message)
@@ -326,11 +327,12 @@ public class BoardSceneController implements Initializable {
       msgTextArea.setText(prevText + "\n" + message);
     }
     
-    public void promtPlayer(String text, PlayerBuyAssetDecision playersDecision, int eventID)
+    public void promptPlayer(String text, PlayerBuyAssetDecision playersDecision, int eventID)
     {
         this.playerBuyAssetDecision = playersDecision;
         textAreaPromt.setText(text);
         this.waitingForAnswerEventId = eventID;
+        repaint();
         startFadeAnimations();
     }
 
@@ -339,8 +341,8 @@ public class BoardSceneController implements Initializable {
         {
             FadeTransition ft = createIconsFadeTransition(playerMovePosition.getPlayerIcon());
             seqTransition.getChildren().add(ft);
-            ft.setOnFinished((EventHandler<ActionEvent>) (ActionEvent actionEvent) -> {
-                boardCells.get(playerMovePosition.getCell()).getChildren().add(playerMovePosition.getPlayerIcon());
+            ft.setOnFinished((ActionEvent actionEvent) -> {
+                cellControllers.get(playerMovePosition.getCell()).addPlayer(playerMovePosition.getPlayerIcon());
                 playerMovePosition.getPlayerIcon().setOpacity(1.0);
             });
         }
@@ -354,35 +356,78 @@ public class BoardSceneController implements Initializable {
             isAnimationsFinished = false;
         }
         
-        seqTransition.onFinishedProperty().set((EventHandler<ActionEvent>) (ActionEvent actionEvent) -> 
+        seqTransition.onFinishedProperty().set((ActionEvent actionEvent) ->
         {
               seqTransition = new SequentialTransition();
               System.out.println("ok goood - seq animations finished");
               isAnimationsFinished = true;
-              showPromtPane();
+              showPromptPane();
         });
     }
 
-    private void hidePromtPane() 
+    private void hidePromptPane()
     {
       promtPane.setVisible(false);
     }
     
-    private void showPromtPane()
+    private void showPromptPane()
     {
       promtPane.setVisible(true);
     }
 
-    public void initCellsNames(List<String> boardCellsNames) {
-        Label cellNameLabel;
-        
-        for(int i=0; i < boardCellsNames.size(); i++)
+    public void initCellsNames(List<? extends DrawableProperty> drawableCells)
+    {
+        for(int i=0; i < drawableCells.size(); i++)
         {
-            String cellName = boardCellsNames.get(i);
-            cellNameLabel = new Label(cellName);
             createTooltipForCell(i);
-            cellNameLabel.setWrapText(true);
-            boardCells.get(i).getChildren().add(cellNameLabel);
+            DrawableProperty drawableProperty = drawableCells.get(i);
+            if (i % 9 == 0)
+            {
+                addCellFxml(i, drawableProperty, CELL_CORNER_FXML);
+            }
+            else if ((0 <= i && i <= 9) || (18 <= i && i <= 27))
+            {
+                addCellFxml(i, drawableProperty, CELL_FXML);
+            }
+            else if (9 <= i && i <= 18)
+            {
+                addCellFxml(i, drawableProperty, CELL_LEFT_FXML);
+            }
+            else
+            {
+                addCellFxml(i, drawableProperty, CELL_RIGHT_FXML);
+            }
+            repaint();
+        }
+    }
+
+    private void addCellFxml(int cellIndex, DrawableProperty drawableProperty, String cellFxml)
+    {
+        FXMLLoader getNamesFXMLLoader = getFXMLLoader(cellFxml);
+        Parent root = getRoot(getNamesFXMLLoader);
+        ((CellController) getNamesFXMLLoader.getController()).setDrawableProperty(drawableProperty);
+        cellControllers.add(getNamesFXMLLoader.getController());
+        boardCells.get(cellIndex).getChildren().add(root);
+    }
+
+    private void repaint()
+    {
+        cellControllers.forEach(CellController::paint);
+    }
+
+    private FXMLLoader getFXMLLoader(String fxmlPath)
+    {
+        return new FXMLLoader(getClass().getResource(fxmlPath));
+    }
+
+    private Parent getRoot(FXMLLoader fxmlLoader) {
+        try
+        {
+            return (Parent) fxmlLoader.load(fxmlLoader.getLocation().openStream());
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+            throw new IllegalPathStateException(e.getMessage());
         }
     }
 

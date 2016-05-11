@@ -2,10 +2,6 @@ package com.monopoly.view.guiView.controllers;
 
 import javafx.scene.Node;
 
-/**
- *
- * @author Ruslan
- */
 public class PlayerPosition {
     private int cell;
     private Node playerIcon;

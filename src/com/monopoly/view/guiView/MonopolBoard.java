@@ -4,6 +4,7 @@ import com.monopoly.controller.Controller;
 import com.monopoly.controller.XmlMonopolyInitReader;
 import com.monopoly.logic.engine.MonopolyEngine;
 import com.monopoly.view.guiView.controllers.BoardSceneController;
+import com.monopoly.view.guiView.controllers.DrawableProperty;
 import com.monopoly.view.guiView.controllers.GameInitSceneController;
 import com.monopoly.view.guiView.controllers.GetNamesSceneController;
 import com.monopoly.view.playerDescisions.PlayerBuyAssetDecision;
@@ -184,10 +185,10 @@ public class MonopolBoard extends Application {
 
     void promptPlayerToBuy(String eventMessage, PlayerBuyAssetDecision playersDecision, int eventId)
     {
-        boardSceneController.promtPlayer(eventMessage, playersDecision, eventId);
+        boardSceneController.promptPlayer(eventMessage, playersDecision, eventId);
     }
 
-    void setCellsNames(List<String> boardCellsNames) {
+    void setCellsNames(List<? extends DrawableProperty> boardCellsNames) {
         boardSceneController.initCellsNames(boardCellsNames);
     }
 

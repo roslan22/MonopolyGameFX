@@ -96,7 +96,7 @@ public class XmlMonopolyInitReader implements MonopolyInitReader
     public static final String TRANSPORTATIONS_ASSET_GROUP_TAG_NAME = "transportations";
     public static final String MONOPOLY_RENT_COST                   = "stayCost";
     public static final String UTILITY                              = "Utility";
-    public static final String TRANSPORTATION                       = "Transportation";
+    public static final String TRANSPORTATION                       = "Transport";
 
     private String xmlFilePath;
 

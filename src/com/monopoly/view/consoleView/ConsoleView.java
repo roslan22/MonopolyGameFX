@@ -3,6 +3,7 @@ package com.monopoly.view.consoleView;
 import com.monopoly.logic.events.Event;
 import com.monopoly.utils.Utils;
 import com.monopoly.view.View;
+import com.monopoly.view.guiView.controllers.DrawableProperty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -268,7 +269,7 @@ public class ConsoleView extends View
     }
 
     @Override
-    public void setCellsNames(List<String> boardCellsNames) {
+    public void setCellsNames(List<? extends DrawableProperty> boardCellsNames) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

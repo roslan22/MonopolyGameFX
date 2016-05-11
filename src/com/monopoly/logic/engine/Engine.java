@@ -3,6 +3,8 @@ package com.monopoly.logic.engine;
 import com.monopoly.logic.engine.monopolyInitReader.CouldNotReadMonopolyInitReader;
 import com.monopoly.logic.engine.monopolyInitReader.MonopolyInitReader;
 import com.monopoly.logic.events.Event;
+import com.monopoly.view.guiView.controllers.DrawableProperty;
+
 import java.util.List;
 
 public interface Engine
@@ -15,5 +17,6 @@ public interface Engine
     void resign(int playerID);
 
     void initializeBoard(MonopolyInitReader monopolyInitReader) throws CouldNotReadMonopolyInitReader;
-    List<String> getBoardCellsNames();
+
+    List<? extends DrawableProperty> getBoardCells();
 }

@@ -72,6 +72,12 @@ public class City extends Property
         }
     }
 
+    @Override
+    public int getHousesOwned()
+    {
+        return houseCounter;
+    }
+
     public static class IllegalRentPricesAmount extends RuntimeException
     {
     }

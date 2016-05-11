@@ -3,7 +3,7 @@
 <monopoly>
     <assets>
         <countries>
-            <country name="Uzbekistan">
+            <country name="Uzbekstan">
                 <city name="Tashkent" cost="480" houseCost="250" stayCost="40" stayCost1="200" stayCost2="600"
                       stayCost3="1800"/>
                 <city name="Namangan" cost="480" houseCost="250" stayCost="80" stayCost1="400" stayCost2="1200"
@@ -57,18 +57,18 @@
                 <city name="Shanghai" cost="2560" houseCost="1000" stayCost="560" stayCost1="9000" stayCost2="9000"
                       stayCost3="18000"/>
             </country>
-            <country name="United States">
+            <country name="USA">
                 <city name="Chicago" cost="2720" houseCost="1000" stayCost="700" stayCost1="3500" stayCost2="10000"
                       stayCost3="22000"/>
-                <city name="Los Angeles" cost="2720" houseCost="1000" stayCost="700" stayCost1="3500"
+                <city name="LA" cost="2720" houseCost="1000" stayCost="700" stayCost1="3500"
                       stayCost2="10000" stayCost3="22000"/>
                 <city name="New York" cost="3040" houseCost="1000" stayCost="1000" stayCost1="4000" stayCost2="12000"
                       stayCost3="28000"/>
             </country>
         </countries>
         <utilities stayCost="2000">
-            <utility name="Electricity Company" cost="1200" stayCost="500"/>
-            <utility name="Water Work" cost="1200" stayCost="500"/>
+            <utility name="Electric" cost="1200" stayCost="500"/>
+            <utility name="Water" cost="1200" stayCost="500"/>
         </utilities>
         <transportations stayCost="4000">
             <transportation name="Train" cost="1600" stayCost="1000"/>

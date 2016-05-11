@@ -2,6 +2,7 @@ package com.monopoly.view;
 
 import com.monopoly.logic.events.Event;
 import com.monopoly.logic.events.EventType;
+import com.monopoly.view.guiView.controllers.DrawableProperty;
 import com.monopoly.view.playerDescisions.PlayerBuyAssetDecision;
 import com.monopoly.view.playerDescisions.PlayerBuyHouseDecision;
 import com.monopoly.view.playerDescisions.PlayerResign;
@@ -44,7 +45,7 @@ public abstract class View
 
     public void showEvents(Event[] events)
     {
-        Arrays.stream(events).forEach((event) -> this.showEvent(event));
+        Arrays.stream(events).forEach(this::showEvent);
     }
 
     private void showEvent(Event event)
@@ -151,7 +152,7 @@ public abstract class View
 
     protected abstract void showGoToJailMsg(Event event);
 
-    public abstract void setCellsNames(List<String> boardCellsNames);
+    public abstract void setCellsNames(List<? extends DrawableProperty> boardCellsNames);
 
     private void unknownEvent()
     {

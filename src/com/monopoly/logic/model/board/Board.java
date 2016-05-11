@@ -7,6 +7,7 @@ import com.monopoly.logic.model.cell.Cell;
 import com.monopoly.logic.model.cell.Property;
 import com.monopoly.logic.model.cell.PropertyGroup;
 import com.monopoly.logic.model.player.Player;
+import com.monopoly.view.guiView.controllers.DrawableProperty;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -253,17 +254,9 @@ public class Board
         return cells.size();
     }
 
-    public List<String> getCellsNames() 
+    public List<? extends DrawableProperty> getCells()
     {
-        List<String> cellNames = new ArrayList<>();
-        String cellName;
-        
-        for(int i=0; i < cells.size(); i++)
-        {
-            cellName = cells.get(i).getCellName();
-            cellNames.add(cellName);
-        }
-        return cellNames;
+        return cells;
     }
 
     public static class PlayerNotOnBoard extends RuntimeException

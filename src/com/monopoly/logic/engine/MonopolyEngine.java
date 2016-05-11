@@ -11,6 +11,7 @@ import com.monopoly.logic.model.cell.Parking;
 import com.monopoly.logic.model.player.ComputerPlayer;
 import com.monopoly.logic.model.player.HumanPlayer;
 import com.monopoly.logic.model.player.Player;
+import com.monopoly.view.guiView.controllers.DrawableProperty;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
@@ -112,7 +113,8 @@ public class MonopolyEngine implements Engine
         Random r = new Random();
         DiceRoll dr = new DiceRoll(r.nextInt(6) + 1, r.nextInt(6) + 1);
         events.addDiceRollEvent(currentPlayer, dr);
-        return dr;
+//        return dr;
+        return new DiceRoll(1 ,1);
     }
 
     public void startGame()
@@ -337,9 +339,10 @@ public class MonopolyEngine implements Engine
     {
         void buy(boolean buyDecision);
     }
-    
-    public List<String> getBoardCellsNames()
+
+    @Override
+    public List<? extends DrawableProperty> getBoardCells()
     {
-        return board.getCellsNames();
+        return board.getCells();
     }
 }

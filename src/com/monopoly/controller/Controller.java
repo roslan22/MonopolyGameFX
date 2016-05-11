@@ -4,7 +4,6 @@ import com.monopoly.logic.engine.Engine;
 import com.monopoly.logic.engine.MonopolyEngine;
 import com.monopoly.logic.engine.monopolyInitReader.CouldNotReadMonopolyInitReader;
 import com.monopoly.logic.events.Event;
-import com.monopoly.utils.Utils;
 import com.monopoly.view.View;
 
 import java.util.List;
@@ -83,7 +82,7 @@ public class Controller
         try
         {
             engine.initializeBoard(new XmlMonopolyInitReader(xmlPath));
-            view.setCellsNames(engine.getBoardCellsNames());
+            view.setCellsNames(engine.getBoardCells());
             System.out.println("Configurations XML loaded from: " + xmlPath);
         } catch (CouldNotReadMonopolyInitReader couldNotReadMonopolyInitReader)
         {

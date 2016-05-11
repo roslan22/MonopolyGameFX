@@ -2,6 +2,7 @@ package com.monopoly.view.guiView;
 
 import com.monopoly.logic.events.Event;
 import com.monopoly.view.View;
+import com.monopoly.view.guiView.controllers.DrawableProperty;
 
 import java.io.File;
 import java.util.List;
@@ -50,6 +51,7 @@ public class GuiView extends View
     protected void showPlayerMove(Event event)
     {
         monopolBoard.showMessageToPlayer(event.getEventMessage());
+        monopolBoard.movePlayer(event.getNextBoardSquareID(), event.getPlayerName());
     }
 
     @Override
@@ -76,9 +78,7 @@ public class GuiView extends View
     protected void showDiceRollResult(Event event)
     {
         monopolBoard.showMessageToPlayer(event.getEventMessage());
-        System.out.println(event.getPlayerName() + " move " + (event.getFirstDiceResult() + event.getSecondDiceResult()));
-        monopolBoard.movePlayer(event.getFirstDiceResult() + event.getSecondDiceResult(),
-                event.getPlayerName());
+
     }
 
     @Override
@@ -165,7 +165,7 @@ public class GuiView extends View
     }
 
     @Override
-    public void setCellsNames(List<String> boardCellsNames) 
+    public void setCellsNames(List<? extends DrawableProperty> boardCellsNames)
     {
         monopolBoard.setCellsNames(boardCellsNames);
     }
