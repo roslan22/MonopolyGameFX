@@ -4,9 +4,9 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="100.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.monopoly.view.guiView.controllers.CornerCellController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="75.0" prefWidth="75.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.monopoly.view.guiView.controllers.CornerCellController">
    <children>
-      <Label fx:id="cellNameLabel" layoutY="-1.0" prefHeight="100.0" prefWidth="100.0" />
-      <FlowPane fx:id="playersPane" layoutY="-1.0" maxHeight="100.0" maxWidth="100.0" prefHeight="100.0" prefWidth="100.0" />
+      <Label fx:id="cellNameLabel" layoutY="-1.0" prefHeight="85.0" prefWidth="85.0" />
+      <FlowPane fx:id="playersPane" layoutY="-1.0" maxHeight="85.0" maxWidth="85.0" prefHeight="85.0" prefWidth="85.0" />
    </children>
 </AnchorPane>

@@ -59,4 +59,10 @@ public abstract class Cell implements DrawableProperty
     {
         return 0;
     }
+
+    @Override
+    public String getPropertySummary()
+    {
+        return getCellName();
+    }
 }

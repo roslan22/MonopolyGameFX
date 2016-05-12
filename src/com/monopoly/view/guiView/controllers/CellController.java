@@ -6,6 +6,7 @@ import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.FlowPane;
 
 public class CellController implements Initializable
@@ -29,6 +30,12 @@ public class CellController implements Initializable
 
     public void setDrawableProperty(DrawableProperty drawableProperty)
     {}
+
+    protected void setTooltip(String text)
+    {
+        Tooltip t = new Tooltip(text);
+        Tooltip.install(playersPane, t);
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources)

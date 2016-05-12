@@ -110,4 +110,12 @@ public abstract class Property extends Cell
     {
         return getPropertyGroup().getColor();
     }
+
+    @Override
+    public String getPropertySummary()
+    {
+        return String.format("Price: ₪%d\nRent: ₪%d",
+                             getPrice(),
+                             getRentPrice());
+    }
 }

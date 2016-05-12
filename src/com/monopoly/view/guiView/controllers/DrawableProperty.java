@@ -13,4 +13,6 @@ public interface DrawableProperty
     Color getGroupColor();
 
     int getHousesOwned();
+
+    String getPropertySummary();
 }

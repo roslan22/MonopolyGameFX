@@ -29,7 +29,6 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
@@ -379,7 +378,6 @@ public class BoardSceneController implements Initializable {
     {
         for(int i=0; i < drawableCells.size(); i++)
         {
-            createTooltipForCell(i);
             DrawableProperty drawableProperty = drawableCells.get(i);
             if (i % 9 == 0)
             {
@@ -429,11 +427,6 @@ public class BoardSceneController implements Initializable {
             e.printStackTrace();
             throw new IllegalPathStateException(e.getMessage());
         }
-    }
-
-    private void createTooltipForCell(int i) {
-        Tooltip tooltip = new Tooltip("here will be all information regarding this cell");
-        Tooltip.install(boardCells.get(i), tooltip);
     }
 
     private int calculateCellToMove(int cell, int currentCell) 

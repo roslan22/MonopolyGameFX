@@ -78,6 +78,19 @@ public class City extends Property
         return houseCounter;
     }
 
+    @Override
+    public String getPropertySummary()
+    {
+        return String.format("Price: ₪%d\nRent: ₪%d\nHouse Price: ₪%d\nRent 1H: ₪%d\n" + "Rent 2H: ₪%d\n" +
+                                     "Rent 3H: ₪%d",
+                             getPrice(),
+                             getRentPrice(),
+                             getHousePrice(),
+                             getRentPrices()[0],
+                             getRentPrices()[1],
+                             getRentPrices()[2]);
+    }
+
     public static class IllegalRentPricesAmount extends RuntimeException
     {
     }

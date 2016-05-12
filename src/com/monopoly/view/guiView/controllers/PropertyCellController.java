@@ -51,6 +51,7 @@ public class PropertyCellController extends CellController implements Initializa
         propertyNameLabel.setText(drawableProperty.getPropertyName());
         ownerLabel.setText(drawableProperty.getOwnerName());
         paintHouses(drawableProperty);
+        setTooltip(drawableProperty.getPropertySummary());
     }
 
     private void paintGroupName(DrawableProperty cell)
@@ -64,5 +65,6 @@ public class PropertyCellController extends CellController implements Initializa
         clearHouses();
         IntStream.range(0, cell.getHousesOwned()).forEach(i -> houses.get(i).setVisible(true));
     }
+
 
 }
