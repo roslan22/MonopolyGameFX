@@ -11,6 +11,7 @@
    <children>
       <Pane maxHeight="80.0" maxWidth="60.0" prefHeight="80.0" prefWidth="60.0">
          <children>
+            <ImageView fx:id="backImg" fitHeight="55.0" fitWidth="60.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true" />
             <VBox maxHeight="80.0" maxWidth="60.0" prefHeight="80.0" prefWidth="60.0">
                <children>
                   <Pane fx:id="propertyGroupColor" maxHeight="25.0" maxWidth="80.0" prefHeight="25.0" prefWidth="60." style="-fx-font-size: 11;">

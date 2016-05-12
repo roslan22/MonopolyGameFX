@@ -9,6 +9,7 @@ import java.util.stream.IntStream;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -21,7 +22,7 @@ public class PropertyCellController extends CellController implements Initializa
     @FXML
     Pane  propertyGroupColor;
     @FXML
-    ImageView houseOneImg, houseTwoImg, houseThreeImg;
+    ImageView houseOneImg, houseTwoImg, houseThreeImg, backImg;
 
     private DrawableProperty drawableProperty;
     private List<ImageView>  houses;
@@ -52,6 +53,17 @@ public class PropertyCellController extends CellController implements Initializa
         ownerLabel.setText(drawableProperty.getOwnerName());
         paintHouses(drawableProperty);
         setTooltip(drawableProperty.getPropertySummary());
+        setBackground();
+    }
+
+    private void setBackground()
+    {
+        try
+        {
+            backImg.setImage(new Image(getClass().getResourceAsStream("boardImages/" + drawableProperty.getGroupName() + ".png")));
+            if (!drawableProperty.getPropertyName().equals(""))
+                backImg.setOpacity(0.3);
+        }catch (Exception ignored){}
     }
 
     private void paintGroupName(DrawableProperty cell)

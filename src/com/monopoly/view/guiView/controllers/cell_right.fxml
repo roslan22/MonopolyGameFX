@@ -11,6 +11,7 @@
    <children>
       <Pane layoutX="10.0" layoutY="-10.0" prefHeight="80.0" prefWidth="60.0" rotate="-90.0">
          <children>
+            <ImageView fx:id="backImg" fitHeight="55.0" fitWidth="60.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true" />
             <VBox prefHeight="80.0" prefWidth="60.0">
                <children>
                   <Pane fx:id="propertyGroupColor" prefHeight="25.0" prefWidth="80.0" style="-fx-font-size: 14;">

@@ -18,4 +18,16 @@ public abstract class CardCell extends Cell
     public void setBoard(Board board) {
         this.board = board;
     }
+
+    @Override
+    public String getPropertyName()
+    {
+        return "";
+    }
+
+    @Override
+    public String getGroupName()
+    {
+        return getCellName();
+    }
 }

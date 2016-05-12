@@ -253,13 +253,11 @@ public class BoardSceneController implements Initializable {
     {
         FlowPane flowPane = new FlowPane();
         flowPane.setAlignment(Pos.CENTER);
-        flowPane.setMaxHeight(80);
-        flowPane.setMaxWidth(80);
 
         setCellId(currentCellNumber, flowPane);
         boardCells.add(currentCellNumber, flowPane);
         gridPaneMain.add(flowPane, from, to);
-        
+
         currentCellNumber++;
         
         return currentCellNumber;
@@ -438,7 +436,7 @@ public class BoardSceneController implements Initializable {
         {
             return (cell + currentCell - MAX_BOARD_CELLS);
         }
-        
+
         return cell + currentCell;
     }
 
