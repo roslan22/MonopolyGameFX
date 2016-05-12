@@ -7,15 +7,15 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="65.0" maxWidth="85.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="65.0" prefWidth="85.0" style="-fx-font-size: 11;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.monopoly.view.guiView.controllers.PropertyCellController">
+<AnchorPane maxHeight="60.0" maxWidth="80.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="60.0" prefWidth="80.0" style="-fx-font-size: 11;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.monopoly.view.guiView.controllers.PropertyCellController">
    <children>
-      <Pane layoutX="10.0" layoutY="-10.0" prefHeight="85.0" prefWidth="65.0" rotate="-90.0">
+      <Pane layoutX="10.0" layoutY="-10.0" prefHeight="80.0" prefWidth="60.0" rotate="-90.0">
          <children>
-            <VBox prefHeight="85.0" prefWidth="65.0">
+            <VBox prefHeight="80.0" prefWidth="60.0">
                <children>
                   <Pane fx:id="propertyGroupColor" prefHeight="25.0" prefWidth="80.0" style="-fx-font-size: 14;">
                      <children>
-                        <Label fx:id="groupNameLabel" maxHeight="30.0" prefHeight="25.0" prefWidth="65.0" wrapText="true">
+                        <Label fx:id="groupNameLabel" maxHeight="30.0" prefHeight="25.0" prefWidth="60.0" wrapText="true">
                            <padding>
                               <Insets left="2.0" right="2.0" />
                            </padding></Label>
@@ -45,7 +45,7 @@
                   </HBox>
                </children>
             </VBox>
-            <FlowPane fx:id="playersPane" prefHeight="85.0" prefWidth="65.0" />
+            <FlowPane fx:id="playersPane" prefHeight="80.0" prefWidth="60.0" />
          </children>
       </Pane>
    </children>

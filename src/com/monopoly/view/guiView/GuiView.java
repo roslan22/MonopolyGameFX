@@ -78,7 +78,6 @@ public class GuiView extends View
     protected void showDiceRollResult(Event event)
     {
         monopolBoard.showMessageToPlayer(event.getEventMessage());
-
     }
 
     @Override
