@@ -43,6 +43,7 @@ public class BoardSceneController implements Initializable {
     public static final String CELL_LEFT_FXML = "cell_left.fxml";
     public static final String CELL_FXML = "cell.fxml";
     public static final String CELL_CORNER_FXML = "cell_corner.fxml";
+    public static final int INIT_MONEY = 1500;
     @FXML
     private GridPane gridPaneMain;
     
@@ -71,6 +72,7 @@ public class BoardSceneController implements Initializable {
     private List<Pane> boardCells = new ArrayList<>();
     private Map<String, PlayerPosition> playersPlaceOnBoard = new TreeMap<>();
     private Map<String, String> playerNamesAndIds = new HashMap<>();
+    private Map<String, Integer> playerNameToMoney = new HashMap<>();
     private List<String> humanPlayerNames;
     private int computerPlayers = 0;
     private int nextPlayerPlaceIndex = 1;
@@ -137,7 +139,7 @@ public class BoardSceneController implements Initializable {
         HBox hbox = new HBox();
         hbox.getChildren().add(setPropertiesToPlayerIcon(playerNamesAndIds.get(name)));
         hbox.getChildren().add(new Label(name));
-        hbox.getChildren().add(new Label(" has ₪0"));
+        hbox.getChildren().add(new Label(" has ₪" + playerNameToMoney.get(name)));
         return hbox;
     }
 
@@ -178,6 +180,7 @@ public class BoardSceneController implements Initializable {
         
         playersPlaceOnBoard.put(playerName, createPlayerPosition(placeIndex, playerID));
         playerNamesAndIds.put(playerName, playerID);
+        playerNameToMoney.put(playerName, INIT_MONEY);
         Node playerIcon = playersPlaceOnBoard.get(playerName).getPlayerIcon();
         boardCells.get(placeIndex).getChildren().add(playerIcon);
         nextPlayerPlaceIndex++;
@@ -437,5 +440,12 @@ public class BoardSceneController implements Initializable {
         }
         
         return cell + currentCell;
+    }
+
+    public void updateMoney(String fromPlayerName, String toPlayerName, int paymentAmount)
+    {
+        playerNameToMoney.computeIfPresent(fromPlayerName, (k, v) -> v - paymentAmount);
+        playerNameToMoney.computeIfPresent(toPlayerName, (k, v) -> v + paymentAmount);
+        createRightTopPlayersMenu();
     }
 }

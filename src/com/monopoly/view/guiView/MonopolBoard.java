@@ -192,4 +192,8 @@ public class MonopolBoard extends Application {
         boardSceneController.initCellsNames(boardCellsNames);
     }
 
+    public void updateMoney(String fromPlayerName, String toPlayerName, int paymentAmount)
+    {
+        boardSceneController.updateMoney(fromPlayerName, toPlayerName, paymentAmount);
+    }
 }

@@ -7,13 +7,13 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="80.0" maxWidth="60.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="80.0" prefWidth="60.0" style="-fx-font-size: 11;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.monopoly.view.guiView.controllers.PropertyCellController">
+<AnchorPane maxHeight="80.0" maxWidth="60.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="80.0" prefWidth="60.0" style="-fx-font-size: 10;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.monopoly.view.guiView.controllers.PropertyCellController">
    <children>
       <Pane maxHeight="80.0" maxWidth="60.0" prefHeight="80.0" prefWidth="60.0">
          <children>
             <VBox maxHeight="80.0" maxWidth="60.0" prefHeight="80.0" prefWidth="60.0">
                <children>
-                  <Pane fx:id="propertyGroupColor" maxHeight="25.0" maxWidth="80.0" prefHeight="25.0" prefWidth="60." style="-fx-font-size: 14;">
+                  <Pane fx:id="propertyGroupColor" maxHeight="25.0" maxWidth="80.0" prefHeight="25.0" prefWidth="60." style="-fx-font-size: 11;">
                      <children>
                         <Label fx:id="groupNameLabel" maxHeight="30.0" prefHeight="25.0" prefWidth="60.0" wrapText="true">
                            <padding>

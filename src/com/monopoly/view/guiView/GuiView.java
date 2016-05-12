@@ -113,6 +113,7 @@ public class GuiView extends View
     @Override
     protected void showPaymentMsg(Event event)
     {
+        monopolBoard.updateMoney(event.getPlayerName(), event.getPaymentToPlayerName(), event.getPaymentAmount());
         monopolBoard.showMessageToPlayer(event.getEventMessage());
     }
 
