@@ -22,7 +22,13 @@ public class PropertyCellController extends CellController implements Initializa
     @FXML
     Pane  propertyGroupColor;
     @FXML
-    ImageView houseOneImg, houseTwoImg, houseThreeImg, backImg;
+    ImageView houseOneImg;
+    @FXML
+    ImageView houseTwoImg;
+    @FXML
+    ImageView houseThreeImg;
+    @FXML
+    ImageView backImg;
 
     private DrawableProperty drawableProperty;
     private List<ImageView>  houses;
@@ -56,16 +62,6 @@ public class PropertyCellController extends CellController implements Initializa
         setBackground();
     }
 
-    private void setBackground()
-    {
-        try
-        {
-            backImg.setImage(new Image(getClass().getResourceAsStream("boardImages/" + drawableProperty.getGroupName() + ".png")));
-            if (!drawableProperty.getPropertyName().equals(""))
-                backImg.setOpacity(0.3);
-        }catch (Exception ignored){}
-    }
-
     private void paintGroupName(DrawableProperty cell)
     {
         groupNameLabel.setText(cell.getGroupName());
@@ -79,4 +75,16 @@ public class PropertyCellController extends CellController implements Initializa
     }
 
 
+    public void setBackground()
+    {
+        if (backImg.getImage() != null)
+            return;
+
+        try
+        {
+            backImg.setImage(new Image(getClass().getResourceAsStream("boardImages/" + this.drawableProperty.getGroupName() + ".png")));
+            if (!this.drawableProperty.getPropertyName().equals(""))
+                backImg.setOpacity(0.2);
+        }catch (Exception ignored){}
+    }
 }
