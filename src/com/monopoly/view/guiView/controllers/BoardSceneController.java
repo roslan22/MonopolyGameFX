@@ -7,13 +7,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.ResourceBundle;
 import java.util.TreeMap;
-
 import javafx.animation.FadeTransition;
 import javafx.animation.SequentialTransition;
 import javafx.animation.Timeline;
@@ -59,6 +56,12 @@ public class BoardSceneController implements Initializable {
     @FXML
     private TextArea textAreaPromt;
     
+    @FXML
+    private TextArea gameMsg;
+    
+    @FXML 
+    private TextArea cardMsgTextArea;
+    
     public final static int FIRST_ROW = 0;
     public final static int LAST_ROW = 9;
     public final static int FIRST_COLUMN = 0;
@@ -66,9 +69,12 @@ public class BoardSceneController implements Initializable {
     public final static int MAX_PLAYERS_NUM = 6;
     public final static int START_PLACE = 0;
     public final static int MAX_BOARD_CELLS = 36;
+    public final static int ANIMATION_SPEED = 700;
+
     public static final ObservableList allGamePlayers = FXCollections.observableArrayList();
 
     private SimpleBooleanProperty finishedInit;
+    private boolean isGameOver = false;
     private List<Pane> boardCells = new ArrayList<>();
     private Map<String, PlayerPosition> playersPlaceOnBoard = new TreeMap<>();
     private Map<String, String> playerNamesAndIds = new HashMap<>();
@@ -81,8 +87,7 @@ public class BoardSceneController implements Initializable {
     private Timeline                     timeline                = new Timeline();
     private SequentialTransition         seqTransition           = new SequentialTransition();
     private boolean                      isAnimationsFinished    = true;
-    private Queue<PlayerPosition>        playersMoves            = new LinkedList<>();
-    private List<CellController> cellControllers         = new ArrayList<>();
+    private List<CellController>         cellControllers         = new ArrayList<>();
 
     @FXML
     private void onYesClicked()
@@ -202,7 +207,7 @@ public class BoardSceneController implements Initializable {
     public SimpleBooleanProperty finishedInit() {
         return finishedInit;
     }
-
+ 
     private void initBoardCells()
     {
        int currentCellNumber = 0;
@@ -211,7 +216,7 @@ public class BoardSceneController implements Initializable {
        currentCellNumber = initTopLineCells(currentCellNumber);
        initRightLineCells(currentCellNumber);
     }
-
+    
     private void initRightLineCells(int currentCellNumber) 
     {
         for(int row = FIRST_ROW; row < LAST_ROW; row++ )
@@ -219,7 +224,7 @@ public class BoardSceneController implements Initializable {
             currentCellNumber = addNewPane(currentCellNumber, LAST_COLUMN, row);
         }
     }
-
+    
     private int initTopLineCells(int currentCellNumber) 
     {
         for(int column = FIRST_COLUMN; column < LAST_COLUMN; column++ )
@@ -228,7 +233,6 @@ public class BoardSceneController implements Initializable {
         }
         return currentCellNumber;
     }
-    
     
     private int initLeftLineCells(int currentCellNumber) {        
         for(int row = LAST_ROW - 1; row > 0; row-- )
@@ -274,44 +278,31 @@ public class BoardSceneController implements Initializable {
     private static boolean isCornerCell(int currentCellNumber) {
         return currentCellNumber == 0 || currentCellNumber == 9 || currentCellNumber == 18 || currentCellNumber == 27;
     }
-
+    
     public void movePlayer(int cell, String PlayerName)
     {   
         PlayerPosition playerPos = playersPlaceOnBoard.get(PlayerName);
         Node playerIcon = playerPos.getPlayerIcon();
         int currentCell = playerPos.getCell();
-        int cellToMove;
         
         if(playerIcon != null)
         {   
-            cellToMove = calculateCellToMove(cell,currentCell);
-            addPlayerIconToBoard(cellToMove, playerIcon);
-            setPlayerPosition(playerPos, cellToMove, playerIcon);
+            int cellToMove = calculateCellToMove(cell,currentCell);
+            addPlayerIconToBoardMoves(cellToMove, playerIcon);
         }      
-        
-        System.out.println("currently moved player " + PlayerName + "to cell: " + cell
-        + "in scene thread: " + Thread.currentThread().getId());
     }
 
-    private void setPlayerPosition(PlayerPosition playerPos, int cellToMove, Node playerIcon) {
-        playerPos.setCell(cellToMove);
-        playerPos.setPlayerIcon(playerIcon);
-    }
-
-    private void addPlayerIconToBoard(int cell, Node playerIcon) 
-    {    
-        removePlayerIconFromBoard(playerIcon);   
-        if(!boardCells.get(cell).getChildren().contains(playerIcon))
-        {
-            playersMoves.add(new PlayerPosition(cell, playerIcon));
-        }
+    private void addPlayerIconToBoardMoves(int cell, Node playerIcon) 
+    {   
+        PlayerPosition playerPosition = new PlayerPosition(cell, playerIcon);
+        addPlayerToSeqTransitions(playerPosition);
 
     }
 
     private FadeTransition createIconsFadeTransition(Node playerIcon) {
-        FadeTransition ft = new FadeTransition(Duration.millis(1000), playerIcon);
-        ft.setFromValue(1.0);
-        ft.setToValue(0.0);
+        FadeTransition ft = new FadeTransition(Duration.millis(ANIMATION_SPEED), playerIcon);
+        //ft.setFromValue(1.0);
+        //ft.setToValue(1.0);
         ft.setCycleCount(1);
         ft.setAutoReverse(false);
         return ft;
@@ -336,18 +327,8 @@ public class BoardSceneController implements Initializable {
         startFadeAnimations();
     }
 
-    private void startFadeAnimations() {
-        for(PlayerPosition playerMovePosition : playersMoves)
-        {
-            FadeTransition ft = createIconsFadeTransition(playerMovePosition.getPlayerIcon());
-            seqTransition.getChildren().add(ft);
-            ft.setOnFinished((ActionEvent actionEvent) -> {
-                cellControllers.get(playerMovePosition.getCell()).addPlayer(playerMovePosition.getPlayerIcon());
-                playerMovePosition.getPlayerIcon().setOpacity(1.0);
-            });
-        }
-        
-        playersMoves.clear();
+    private void startFadeAnimations() 
+    {     
         seqTransition.setCycleCount(1);
 
         if(isAnimationsFinished)
@@ -361,7 +342,17 @@ public class BoardSceneController implements Initializable {
               seqTransition = new SequentialTransition();
               System.out.println("ok goood - seq animations finished");
               isAnimationsFinished = true;
-              showPromptPane();
+              if(!isGameOver)
+                 showPromptPane();
+        });
+    }
+
+    private void addPlayerToSeqTransitions(PlayerPosition playerMovePosition) {
+        FadeTransition ft = createIconsFadeTransition(playerMovePosition.getPlayerIcon());
+        seqTransition.getChildren().add(ft);
+        ft.setOnFinished((ActionEvent actionEvent) -> {
+            removePlayerIconFromBoard(playerMovePosition.getPlayerIcon());
+            cellControllers.get(playerMovePosition.getCell()).addPlayer(playerMovePosition.getPlayerIcon());
         });
     }
 
@@ -374,7 +365,7 @@ public class BoardSceneController implements Initializable {
     {
       promtPane.setVisible(true);
     }
-
+    
     public void initCellsNames(List<? extends DrawableProperty> drawableCells)
     {
         for(int i=0; i < drawableCells.size(); i++)
@@ -446,4 +437,37 @@ public class BoardSceneController implements Initializable {
         playerNameToMoney.computeIfPresent(toPlayerName, (k, v) -> v + paymentAmount);
         createRightTopPlayersMenu();
     }
+
+    public void showPlayerLostMsg(String eventMessage) 
+    {
+        addSeqTransitionToTextArea(eventMessage, gameMsg);
+    }
+
+    public void showGameOverMsg(String eventMessage) 
+    {
+        addSeqTransitionToTextArea(eventMessage,gameMsg);
+        isGameOver = true;
+        startFadeAnimations();
+    }
+
+    public void showDiceRollResult(String eventMessage) 
+    {
+        addSeqTransitionToTextArea(eventMessage,gameMsg);
+    }
+    
+    public void showCardMsg(String eventMessage) 
+    {
+        addSeqTransitionToTextArea(eventMessage, cardMsgTextArea);
+    }
+        
+    private void addSeqTransitionToTextArea(String eventMessage, TextArea textArea) 
+    {
+        Label gameOverLabel = new Label(eventMessage);
+        FadeTransition ft = createIconsFadeTransition(gameOverLabel);
+        seqTransition.getChildren().add(ft);
+        ft.setOnFinished((ActionEvent actionEvent) -> {
+            textArea.setText(eventMessage);
+        });
+    }
+
 }

@@ -16,6 +16,7 @@
             <Image url="@../../res/images/surprise.png" />
          </image>
       </ImageView>
+      <TextArea fx:id="cardMsgTextArea" editable="false" layoutX="200.0" layoutY="300.0" prefHeight="80.0" prefWidth="400.0" rotate="-45.0" style="-fx-font-size: 13px;" wrapText="true" />
       <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="390.0" layoutY="400.0" pickOnBounds="true" preserveRatio="true" rotate="-45.0">
          <image>
             <Image url="@../../res/images/warning.png" />
@@ -48,8 +49,8 @@
         </rowConstraints>
       </GridPane>
       <Label contentDisplay="CENTER" layoutX="723.0" layoutY="26.0" prefHeight="35.0" prefWidth="88.0" text="Players:" underline="true" />
-      <VBox fx:id="vboxPlayers" layoutX="723.0" layoutY="68.0" prefHeight="198.0" prefWidth="237.0" />
-      <TextArea fx:id="msgTextArea" editable="false" focusTraversable="false" layoutX="723.0" layoutY="269.0" opacity="0.89" pickOnBounds="false" prefHeight="223.0" prefWidth="237.0" style="-fx-font-size: 11px;" wrapText="true">
+      <VBox fx:id="vboxPlayers" layoutX="723.0" layoutY="68.0" prefHeight="132.0" prefWidth="237.0" />
+      <TextArea fx:id="msgTextArea" editable="false" focusTraversable="false" layoutX="723.0" layoutY="200.0" opacity="0.89" pickOnBounds="false" prefHeight="114.0" prefWidth="237.0" style="-fx-font-size: 13px;" wrapText="true">
          <font>
             <Font size="18.0" />
          </font>
@@ -74,5 +75,6 @@
             </Button>
          </children>
       </Pane>
+      <TextArea fx:id="gameMsg" layoutX="725.0" layoutY="378.0" prefHeight="75.0" prefWidth="234.0" style="-fx-font-size: 13;" />
     </children>
 </AnchorPane>

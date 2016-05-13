@@ -179,7 +179,6 @@ public class MonopolBoard extends Application {
         if(boardSceneController != null)
         {
             boardSceneController.movePlayer(cell, playerName);
-            System.out.println("Currently in javafx application thread:" + Thread.currentThread().getId());
         }
     }
 
@@ -195,5 +194,21 @@ public class MonopolBoard extends Application {
     public void updateMoney(String fromPlayerName, String toPlayerName, int paymentAmount)
     {
         boardSceneController.updateMoney(fromPlayerName, toPlayerName, paymentAmount);
+    }
+
+    void showPlayerLostMsg(String eventMessage) {
+        boardSceneController.showPlayerLostMsg(eventMessage);
+    }
+
+    void showGameOverMsg(String game_Over) {
+        boardSceneController.showGameOverMsg(game_Over);
+    }
+
+    void showDiceRollResult(String eventMessage) {
+        boardSceneController.showDiceRollResult(eventMessage);
+    }
+
+    void showCardMsg(String eventMessage) {
+        boardSceneController.showCardMsg(eventMessage);
     }
 }

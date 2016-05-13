@@ -16,7 +16,10 @@ public class CellController implements Initializable
 
     public void addPlayer(Node player)
     {
-        playersPane.getChildren().add(player);
+        if(!playersPane.getChildren().contains(player))
+        {
+            playersPane.getChildren().add(player);
+        }
     }
 
     public void removePlayer(Node player)
