@@ -112,8 +112,8 @@ public class MonopolyEngine implements Engine
     public DiceRoll rollDices()
     {
         Random r = new Random();
-//        DiceRoll dr = new DiceRoll(r.nextInt(6) + 1, r.nextInt(6) + 1);
-        DiceRoll dr = new DiceRoll(4, 4);
+        DiceRoll dr = new DiceRoll(r.nextInt(6) + 1, r.nextInt(6) + 1);
+        //DiceRoll dr = new DiceRoll(4, 4);
         events.addDiceRollEvent(currentPlayer, dr);
         return dr;
     }

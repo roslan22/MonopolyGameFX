@@ -115,6 +115,7 @@ public class Controller
     private void resign(int playerID)
     {
         engine.resign(playerID);
+        continueGameAfterPromt();
     }
 
 }

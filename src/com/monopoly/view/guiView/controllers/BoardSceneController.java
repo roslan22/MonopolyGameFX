@@ -180,7 +180,7 @@ public class BoardSceneController implements Initializable
     {
         String playerID;
         playerID = "player" + nextPlayerPlaceIndex;
-
+        
         playersPlaceOnBoard.put(playerName, createPlayerPosition(placeIndex, playerID));
         playerNamesAndIds.put(playerName, playerID);
         playerNameToMoney.put(playerName, INIT_MONEY);
@@ -309,8 +309,8 @@ public class BoardSceneController implements Initializable
     private FadeTransition createIconsFadeTransition(Node playerIcon, int animationSpeed)
     {
         FadeTransition ft = new FadeTransition(Duration.millis(animationSpeed), playerIcon);
-        //ft.setFromValue(1.0);
-        //ft.setToValue(1.0);
+        ft.setFromValue(1.0);
+        ft.setToValue(0.0);
         ft.setCycleCount(1);
         ft.setAutoReverse(false);
         return ft;
@@ -367,6 +367,7 @@ public class BoardSceneController implements Initializable
         FadeTransition ft = createIconsFadeTransition(playerMovePosition.getPlayerIcon());
         seqTransition.getChildren().add(ft);
         ft.setOnFinished((ActionEvent actionEvent) -> {
+            playerMovePosition.getPlayerIcon().setOpacity(1.0);
             removePlayerIconFromBoard(playerMovePosition.getPlayerIcon());
             cellControllers.get(playerMovePosition.getCell()).addPlayer(playerMovePosition.getPlayerIcon());
         });
@@ -470,16 +471,16 @@ public class BoardSceneController implements Initializable
         startFadeAnimations();
     }
 
-    public void showDiceRollResult(String eventMessage, int firstResult, int secondResult)
+    public void showDiceRollResult(String playerName, String eventMessage, int firstResult, int secondResult)
     {
         SequentialTransition st = new SequentialTransition();
+        showThrowingCubeMessage("Player " + playerName + " throwing cubes now.");
 
         st.getChildren().addAll(getRandomCubeTransition(), getRandomCubeTransition(), getRandomCubeTransition());
         st.setOnFinished(e -> {
             leftCube.setImage(new Image(getClass().getResourceAsStream("boardImages/" + firstResult + ".png")));
             rightCube.setImage(new Image(getClass().getResourceAsStream("boardImages/" + secondResult + ".png")));
         });
-
         seqTransition.getChildren().add(st);
     }
 
@@ -498,6 +499,7 @@ public class BoardSceneController implements Initializable
 
         return rotateTransition;
     }
+    
 
     public void showSurpriseCard(String cardText)
     {
@@ -605,6 +607,20 @@ public class BoardSceneController implements Initializable
     public void buy(String playerName, int boardSquareID)
     {
         addSeqTransition(() -> cellControllers.get(boardSquareID).buy(playerName));
+    }
+
+    private void showThrowingCubeMessage(String string) 
+    {
+        addSeqTransition(() -> {
+            gameMsg.setText(string);
+            gameMsg.setScrollTop(Double.MAX_VALUE);
+        });
+    }
+
+    public void showPlayerResignMsg(String eventMessage) 
+    {
+        showMessage(eventMessage);
+        startFadeAnimations();
     }
 
     @FunctionalInterface

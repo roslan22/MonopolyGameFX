@@ -74,7 +74,7 @@
             </Button>
          </children>
       </Pane>
-      <TextArea fx:id="gameMsg" layoutX="725.0" layoutY="378.0" prefHeight="75.0" prefWidth="234.0" style="-fx-font-size: 13;" />
+      <TextArea fx:id="gameMsg" editable="false" focusTraversable="false" layoutX="725.0" layoutY="378.0" prefHeight="75.0" prefWidth="234.0" style="-fx-font-size: 15;" wrapText="true" />
       <Pane fx:id="surprisePane" layoutX="140.0" layoutY="150.0" maxHeight="150.0" maxWidth="200.0" minHeight="130.0" minWidth="200.0" prefHeight="130.0" prefWidth="200.0" rotate="135.0">
          <children>
             <ImageView fx:id="surpriseCard" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">

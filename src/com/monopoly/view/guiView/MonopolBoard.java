@@ -207,8 +207,8 @@ public class MonopolBoard extends Application {
         boardSceneController.showGameOverMsg(game_Over);
     }
 
-    void showDiceRollResult(String eventMessage, int firstResult, int secondResult) {
-        boardSceneController.showDiceRollResult(eventMessage, firstResult, secondResult);
+    void showDiceRollResult(String playerName, String eventMessage, int firstResult, int secondResult) {
+        boardSceneController.showDiceRollResult(playerName, eventMessage, firstResult, secondResult);
     }
 
     void showSurpriseCard(String eventMessage) {
@@ -231,5 +231,9 @@ public class MonopolBoard extends Application {
     public void showWarningCard(String eventMessage)
     {
         boardSceneController.showWarningCard(eventMessage);
+    }
+
+    void showPlayerResignMsg(String eventMessage) {
+        boardSceneController.showPlayerResignMsg(eventMessage);
     }
 }
