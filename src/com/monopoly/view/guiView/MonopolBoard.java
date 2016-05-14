@@ -106,7 +106,7 @@ public class MonopolBoard extends Application {
         Parent root = getRoot(getNamesFXMLLoader);
         boardSceneController = getNamesFXMLLoader.getController();
         
-        boardSceneController.setPlayers(names, humanPlayers, computerPlayers);
+        boardSceneController.setPlayers(names, computerPlayers);
         primaryStage.setScene(new Scene(root));
         startGame();
     }
@@ -209,12 +209,17 @@ public class MonopolBoard extends Application {
         boardSceneController.showDiceRollResult(eventMessage);
     }
 
-    void showCardMsg(String eventMessage) {
-        boardSceneController.showCardMsg(eventMessage);
+    void showSurpriseCard(String eventMessage) {
+        boardSceneController.showSurpriseCard(eventMessage);
     }
 
     public void buy(String playerName, int boardSquareID)
     {
         boardSceneController.buy(playerName, boardSquareID);
+    }
+
+    public void showWarningCard(String eventMessage)
+    {
+        boardSceneController.showWarningCard(eventMessage);
     }
 }

@@ -101,14 +101,14 @@ public class EventList
     public void addSurpriseCardEvent(Player player, String cardText)
     {
         Event e = new EventBuilder(getAndIncrementNextEventID(), EventType.SURPRISE_CARD).setPlayerName(player.getName())
-                .setEventMessage(player.getName() + " got surprise card: " + cardText).createGameEvent();
+                .setEventMessage(cardText).createGameEvent();
         events.add(e);
     }
 
     public void addAlertCardEvent(Player player, String cardText)
     {
         Event e = new EventBuilder(getAndIncrementNextEventID(), EventType.WARRANT_CARD).setPlayerName(player.getName())
-                .setEventMessage(player.getName() + " got warning card: " + cardText).createGameEvent();
+                .setEventMessage(cardText).createGameEvent();
         events.add(e);
     }
 

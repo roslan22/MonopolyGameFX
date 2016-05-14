@@ -12,14 +12,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.TreeMap;
+import java.util.stream.IntStream;
 
 import javafx.animation.FadeTransition;
+import javafx.animation.ParallelTransition;
+import javafx.animation.PathTransition;
+import javafx.animation.RotateTransition;
 import javafx.animation.SequentialTransition;
-import javafx.animation.Timeline;
-import javafx.beans.property.SimpleBooleanProperty;
+import javafx.animation.Transition;
 import javafx.beans.value.ChangeListener;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -35,6 +36,9 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.CubicCurveTo;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
 import javafx.util.Duration;
 
 public class BoardSceneController implements Initializable
@@ -44,7 +48,16 @@ public class BoardSceneController implements Initializable
     public static final String CELL_LEFT_FXML   = "cell_left.fxml";
     public static final String CELL_FXML        = "cell.fxml";
     public static final String CELL_CORNER_FXML = "cell_corner.fxml";
-    public static final int    INIT_MONEY       = 1500;
+
+    public static final int INIT_MONEY              = 1500;
+    public final static int LAST_ROW                = 9;
+    public final static int FIRST_COLUMN            = 0;
+    public final static int LAST_COLUMN             = 9;
+    public final static int START_PLACE             = 0;
+    public final static int MAX_BOARD_CELLS         = 36;
+    public final static int DEFAULT_ANIMATION_SPEED = 700;
+    public final static int FIRST_ROW               = 0;
+
     @FXML
     private GridPane gridPaneMain;
 
@@ -52,46 +65,31 @@ public class BoardSceneController implements Initializable
     private VBox vboxPlayers;
 
     @FXML
-    private TextArea msgTextArea;
+    private Pane promtPane, surprisePane, warningPane;
 
     @FXML
-    private Pane promtPane;
+    private TextArea textAreaPromt, gameMsg, cardMsgTextArea, msgTextArea;
 
     @FXML
-    private TextArea textAreaPromt;
+    private ImageView surpriseCard, warningCard;
 
     @FXML
-    private TextArea gameMsg;
+    private Label warningText, surpriseText;
 
-    @FXML
-    private TextArea cardMsgTextArea;
-
-    public final static int FIRST_ROW               = 0;
-    public final static int LAST_ROW                = 9;
-    public final static int FIRST_COLUMN            = 0;
-    public final static int LAST_COLUMN             = 9;
-    public final static int MAX_PLAYERS_NUM         = 6;
-    public final static int START_PLACE             = 0;
-    public final static int MAX_BOARD_CELLS         = 36;
-    public final static int DEFAULT_ANIMATION_SPEED = 700;
-
-    public static final ObservableList allGamePlayers = FXCollections.observableArrayList();
-
-    private SimpleBooleanProperty finishedInit;
-    private boolean                     isGameOver          = false;
+    private List<CellController>        cellControllers     = new ArrayList<>();
     private List<Pane>                  boardCells          = new ArrayList<>();
     private Map<String, PlayerPosition> playersPlaceOnBoard = new TreeMap<>();
     private Map<String, String>         playerNamesAndIds   = new HashMap<>();
     private Map<String, Integer>        playerNameToMoney   = new HashMap<>();
-    private List<String> humanPlayerNames;
-    private int computerPlayers      = 0;
-    private int nextPlayerPlaceIndex = 1;
+
     private PlayerBuyAssetDecision playerBuyAssetDecision;
-    private int                  waitingForAnswerEventId;
-    private Timeline             timeline                = new Timeline();
-    private SequentialTransition seqTransition           = new SequentialTransition();
-    private boolean              isAnimationsFinished    = true;
-    private List<CellController> cellControllers         = new ArrayList<>();
+    private int                    waitingForAnswerEventId;
+    private int                    loops;
+
+    private SequentialTransition seqTransition        = new SequentialTransition();
+    private boolean              isGameOver           = false;
+    private boolean              isAnimationsFinished = true;
+    private int                  nextPlayerPlaceIndex = 1;
 
     @FXML
     private void onYesClicked()
@@ -116,24 +114,18 @@ public class BoardSceneController implements Initializable
     @Override
     public void initialize(URL url, ResourceBundle rb)
     {
-        finishedInit = new SimpleBooleanProperty(false);
         initBoardCells();
         promtPane.setVisible(false);
-        msgTextArea.textProperty().addListener((ChangeListener<Object>) (observable, oldValue, newValue) ->
-                msgTextArea.setScrollTop(Double.MAX_VALUE));
+        warningText.setWrapText(true);
+        surpriseText.setWrapText(true);
+        msgTextArea.textProperty().addListener((ChangeListener<Object>) (observable, oldValue, newValue) -> msgTextArea
+                .setScrollTop(Double.MAX_VALUE));
     }
 
-    public void setPlayers(List<String> playerNames, int humanPlayers, int computerPlayers)
+    public void setPlayers(List<String> playerNames, int computerPlayers)
     {
-        this.humanPlayerNames = playerNames;
-        this.computerPlayers = computerPlayers;
-        initPlayersOnBoard(humanPlayers + computerPlayers);
-    }
-
-    public void initPlayersOnBoard(int playersNumber)
-    {
-        addHumanPlayers();
-        addComputerPlayers();
+        addHumanPlayers(playerNames);
+        addComputerPlayers(computerPlayers);
         createRightTopPlayersMenu();
     }
 
@@ -166,24 +158,15 @@ public class BoardSceneController implements Initializable
         return playerIcon;
     }
 
-    private void addHumanPlayers()
+    private void addHumanPlayers(List<String> humanPlayerNames)
     {
-        for (String name : this.humanPlayerNames)
-        {
-            allGamePlayers.add(name);
-            placePlayerOnBoard(name, START_PLACE);
-        }
+        humanPlayerNames.forEach((name) -> placePlayerOnBoard(name, START_PLACE));
     }
 
 
-    private void addComputerPlayers()
+    private void addComputerPlayers(int playersNumber)
     {
-        for (int i = 1; i <= computerPlayers; i++)
-        {
-            String name = "Computer" + i;
-            allGamePlayers.add(name);
-            placePlayerOnBoard(name, START_PLACE);
-        }
+        IntStream.range(1, playersNumber + 1).forEach(i -> placePlayerOnBoard("Computer" + i, START_PLACE));
     }
 
     private void placePlayerOnBoard(String playerName, int placeIndex)
@@ -211,11 +194,6 @@ public class BoardSceneController implements Initializable
         playerIcon.setFitHeight(30);
         playerIcon.setFitWidth(30);
         return playerIcon;
-    }
-
-    public SimpleBooleanProperty finishedInit()
-    {
-        return finishedInit;
     }
 
     private void initBoardCells()
@@ -338,7 +316,7 @@ public class BoardSceneController implements Initializable
 
     public void showMessage(String message)
     {
-        addSeqTransition(()-> {
+        addSeqTransition(() -> {
             String prevText = msgTextArea.getText();
             msgTextArea.setText(prevText + "\n" + message);
             msgTextArea.setScrollTop(Double.MAX_VALUE);
@@ -459,7 +437,6 @@ public class BoardSceneController implements Initializable
         {
             return (cell + currentCell - MAX_BOARD_CELLS);
         }
-
         return cell + currentCell;
     }
 
@@ -490,9 +467,84 @@ public class BoardSceneController implements Initializable
         addSeqTransitionToTextArea(eventMessage, gameMsg);
     }
 
-    public void showCardMsg(String eventMessage)
+    public void showSurpriseCard(String cardText)
     {
-        addSeqTransitionToTextArea(eventMessage, cardMsgTextArea);
+        ParallelTransition parallelTransition = new ParallelTransition();
+        parallelTransition.getChildren()
+                .addAll(getPathTransition(this.surprisePane, cardText, 97, 68, surpriseCard, surpriseText),
+                        getRotateTransition(this.surprisePane));
+        parallelTransition.setAutoReverse(true);
+        parallelTransition.setCycleCount(2);
+        seqTransition.getChildren().add(parallelTransition);
+    }
+
+    public void showWarningCard(String eventMessage)
+    {
+        ParallelTransition parallelTransition = new ParallelTransition();
+        parallelTransition.getChildren()
+                .addAll(getPathTransition(this.warningPane, eventMessage, 97, 68, warningCard, warningText),
+                        getRotateTransition(this.warningPane));
+        parallelTransition.setAutoReverse(true);
+        parallelTransition.setCycleCount(2);
+        seqTransition.getChildren().add(parallelTransition);
+    }
+
+    private RotateTransition getRotateTransition(Node card)
+    {
+        RotateTransition rotateTransition = new RotateTransition(Duration.millis(2000), card);
+        rotateTransition.setByAngle(360 - card.getRotate());
+        rotateTransition.setCycleCount(1);
+        rotateTransition.setAutoReverse(false);
+        return rotateTransition;
+    }
+
+    private Transition getPathTransition(Pane card, String cardText, int initX, int initY, ImageView imageCard, Label label)
+    {
+        SequentialTransition st = new SequentialTransition();
+
+        double destX = 350;
+        double destY = 350;
+        Path path = new Path();
+        path.getElements().add(new MoveTo(initX, initY));
+        path.getElements().add(new CubicCurveTo(initX,
+                                                initY,
+                                                (destX - card.getLayoutX()) / 2,
+                                                (destY - card.getLayoutY()) / 2,
+                                                destX - card.getLayoutX(),
+                                                destY - card.getLayoutY()));
+        PathTransition pathTransition = new PathTransition();
+        pathTransition.setDuration(Duration.millis(2000));
+        pathTransition.setPath(path);
+        pathTransition.setNode(card);
+        pathTransition.setCycleCount(1);
+        pathTransition.setAutoReverse(false);
+        pathTransition.setOnFinished(e -> {
+            loops++;
+            if (loops % 2 == 0)
+            {
+                return;
+            }
+            imageCard.setVisible(false);
+            label.setStyle("-fx-background-color: white;");
+            label.setText(cardText);
+        });
+
+        RotateTransition rotateTransition = new RotateTransition(Duration.millis(2000), card);
+        rotateTransition.setByAngle(0);
+        rotateTransition.setCycleCount(1);
+        rotateTransition.setAutoReverse(false);
+        rotateTransition.setOnFinished(e -> {
+            if (loops % 2 == 0)
+            {
+                return;
+            }
+            imageCard.setVisible(true);
+            label.setStyle(null);
+            label.setText("");
+        });
+
+        st.getChildren().addAll(pathTransition, rotateTransition);
+        return st;
     }
 
     private void addSeqTransitionToTextArea(String eventMessage, TextArea textArea)

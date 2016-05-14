@@ -50,7 +50,6 @@ public class GuiView extends View
     @Override
     protected void showPlayerMove(Event event)
     {
-        monopolBoard.showMessageToPlayer(event.getEventMessage());
         monopolBoard.movePlayer(event.getNextBoardSquareID(), event.getPlayerName());
         System.out.println(event.getPlayerName() + " moves to " + event.getNextBoardSquareID());
     }
@@ -65,7 +64,6 @@ public class GuiView extends View
     @Override
     protected void showGameStartedMsg()
     {
-        monopolBoard.showMessageToPlayer("Game Started");
     }
 
     @Override
@@ -89,14 +87,12 @@ public class GuiView extends View
     @Override
     protected void showAssetBoughtMsg(Event event)
     {
-        monopolBoard.showMessageToPlayer(event.getEventMessage());
         monopolBoard.buy(event.getPlayerName(), event.getBoardSquareID());
     }
 
     @Override
     protected void showHouseBoughtMsg(Event event)
     {
-        monopolBoard.showMessageToPlayer(event.getEventMessage());
         monopolBoard.buy(event.getPlayerName(), event.getBoardSquareID());
     }
 
@@ -149,31 +145,31 @@ public class GuiView extends View
     @Override
     protected void showUsedOutOfJailCardMsg(Event event)
     {
-        monopolBoard.showCardMsg(event.getEventMessage());
+        monopolBoard.showMessageToPlayer(event.getEventMessage());
     }
 
     @Override
     protected void showSurpriseCardMsg(Event event)
     {
-        monopolBoard.showCardMsg(event.getEventMessage());
+        monopolBoard.showSurpriseCard(event.getEventMessage());
     }
 
     @Override
     protected void showWarrantCardMsg(Event event)
     {
-        monopolBoard.showCardMsg(event.getEventMessage());
+        monopolBoard.showWarningCard(event.getEventMessage());
     }
 
     @Override
     protected void showOutOfJailCard(Event event)
     {
-        monopolBoard.showCardMsg(event.getEventMessage());
+        monopolBoard.showMessageToPlayer(event.getEventMessage());
     }
 
     @Override
     protected void showGoToJailMsg(Event event)
     {
-        monopolBoard.showCardMsg(event.getEventMessage());
+        monopolBoard.showMessageToPlayer(event.getEventMessage());
     }
 
     public static Boolean isNewGameRequired()
