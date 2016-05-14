@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.ResourceBundle;
 import java.util.TreeMap;
 import java.util.stream.IntStream;
@@ -32,6 +33,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
@@ -70,10 +72,10 @@ public class BoardSceneController implements Initializable
     private Pane promtPane, surprisePane, warningPane;
 
     @FXML
-    private TextArea textAreaPromt, gameMsg, cardMsgTextArea, msgTextArea;
+    private TextArea textAreaPromt, gameMsg, msgTextArea;
 
     @FXML
-    private ImageView surpriseCard, warningCard;
+    private ImageView surpriseCard, warningCard, leftCube, rightCube;
 
     @FXML
     private Label warningText, surpriseText;
@@ -87,7 +89,7 @@ public class BoardSceneController implements Initializable
     private PlayerBuyAssetDecision playerBuyAssetDecision;
     private int                    waitingForAnswerEventId;
     private int                    loops;
-    private PlayerResign playerResign;
+    private PlayerResign           playerResign;
 
     private SequentialTransition seqTransition        = new SequentialTransition();
     private boolean              isGameOver           = false;
@@ -468,9 +470,33 @@ public class BoardSceneController implements Initializable
         startFadeAnimations();
     }
 
-    public void showDiceRollResult(String eventMessage)
+    public void showDiceRollResult(String eventMessage, int firstResult, int secondResult)
     {
-        addSeqTransitionToTextArea(eventMessage, gameMsg);
+        SequentialTransition st = new SequentialTransition();
+
+        st.getChildren().addAll(getRandomCubeTransition(), getRandomCubeTransition(), getRandomCubeTransition());
+        st.setOnFinished(e -> {
+            leftCube.setImage(new Image(getClass().getResourceAsStream("boardImages/" + firstResult + ".png")));
+            rightCube.setImage(new Image(getClass().getResourceAsStream("boardImages/" + secondResult + ".png")));
+        });
+
+        seqTransition.getChildren().add(st);
+    }
+
+    private RotateTransition getRandomCubeTransition()
+    {
+        RotateTransition rotateTransition = new RotateTransition(Duration.millis(500), leftCube);
+        rotateTransition.setByAngle(0);
+        rotateTransition.setCycleCount(1);
+        rotateTransition.setAutoReverse(false);
+        rotateTransition.setOnFinished(e -> {
+            leftCube.setImage(new Image(getClass().getResourceAsStream("boardImages/" + (new Random()
+                    .nextInt(6) + 1) + ".png")));
+            rightCube.setImage(new Image(getClass().getResourceAsStream("boardImages/" + (new Random()
+                    .nextInt(6) + 1) + ".png")));
+        });
+
+        return rotateTransition;
     }
 
     public void showSurpriseCard(String cardText)
@@ -561,8 +587,7 @@ public class BoardSceneController implements Initializable
         ft.setOnFinished((ActionEvent actionEvent) -> textArea.setText(eventMessage));
     }
 
-    public void initDecisions(PlayerBuyAssetDecision playerBuyAssetDecision,
-                              PlayerBuyHouseDecision playerBuyHouseDecision,
+    public void initDecisions(PlayerBuyAssetDecision playerBuyAssetDecision, PlayerBuyHouseDecision playerBuyHouseDecision,
                               PlayerResign playerResign)
     {
         this.playerBuyAssetDecision = playerBuyAssetDecision;

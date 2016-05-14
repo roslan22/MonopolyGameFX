@@ -78,7 +78,7 @@ public class GuiView extends View
     @Override
     protected void showDiceRollResult(Event event)
     {
-        monopolBoard.showDiceRollResult(event.getEventMessage());
+        monopolBoard.showDiceRollResult(event.getEventMessage(), event.getFirstDiceResult(), event.getSecondDiceResult());
     }
 
     @Override
