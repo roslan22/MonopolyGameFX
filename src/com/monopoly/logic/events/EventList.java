@@ -136,38 +136,39 @@ public class EventList
         events.add(e);
     }
 
-    public void addPromptPlayerToBuyAssetEvent(Player player, String propertyGroupName, String propertyName, int price)
+    public void addPromptPlayerToBuyAssetEvent(Player player, String propertyGroupName, String propertyName, int price,
+                                               int squareID)
     {
         String eventMessage = player
                 .getName() + " would you like to buy " + propertyName + " in " + propertyGroupName + " for ₪" + price + "? You now own ₪" + player
                 .getMoneyAmount();
         Event e = new EventBuilder(getAndIncrementNextEventID(), EventType.PROMPT_PLAYER_TO_BUY_ASSET)
-                .setEventMessage(eventMessage).setPlayerName(player.getName()).createGameEvent();
+                .setEventMessage(eventMessage).setPlayerName(player.getName()).setBoardSquareID(squareID).createGameEvent();
         events.add(e);
     }
 
-    public void addPromptPlayerToBuyHouseEvent(Player player, String cityName, int housePrice)
+    public void addPromptPlayerToBuyHouseEvent(Player player, String cityName, int housePrice, int squareID)
     {
         String eventMessage = player.getName() + " would you like to buy house in " + cityName + " for ₪" + housePrice +
                 "? You now own ₪" + player.getMoneyAmount();
         Event e = new EventBuilder(getAndIncrementNextEventID(), EventType.PROMPT_PLAYER_TO_BUY_HOUSE)
-                .setEventMessage(eventMessage).createGameEvent();
+                .setEventMessage(eventMessage).setBoardSquareID(squareID).createGameEvent();
         events.add(e);
     }
 
-    public void addHouseBoughtEvent(Player player, String cityName)
+    public void addHouseBoughtEvent(Player player, String cityName, int squareID)
     {
         Event e = new EventBuilder(getAndIncrementNextEventID(), EventType.HOUSE_BOUGHT_MESSAGE)
                 .setPlayerName(player.getName()).setEventMessage(player.getName() + " bought house in" + cityName)
-                .createGameEvent();
+                .setBoardSquareID(squareID).createGameEvent();
         events.add(e);
     }
 
-    public void addAssertBoughtEvent(Player player, String assetName)
+    public void addAssertBoughtEvent(Player player, String assetName, int squareID)
     {
         Event e = new EventBuilder(getAndIncrementNextEventID(), EventType.ASSET_BOUGHT_MESSAGE)
                 .setPlayerName(player.getName()).setEventMessage(player.getName() + " bought " + assetName)
-                .createGameEvent();
+                .setBoardSquareID(squareID).createGameEvent();
         events.add(e);
     }
 

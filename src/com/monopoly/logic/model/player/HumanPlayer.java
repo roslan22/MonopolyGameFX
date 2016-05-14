@@ -15,26 +15,27 @@ public class HumanPlayer extends Player
     @Override
     public void askToBuyProperty(Property property)
     {
-        engine.askToBuyProperty(this,
-                                property.getPropertyGroup().getName(),
-                                property.getName(),
-                                property.getPrice(),
-                                buyDecision -> {
-                                    if (buyDecision)
-                                    {
-                                        engine.addAssetBoughtEvent(this, property.getName());
-                                        property.buyProperty(HumanPlayer.this);
-                                    }
-                                });
+        engine.askToBuyProperty(property,
+                                this,
+                                buyDecision -> onBuyDecisionTaken(property, buyDecision));
+    }
+
+    private void onBuyDecisionTaken(Property property, boolean buyDecision)
+    {
+        if (buyDecision)
+        {
+            engine.addAssetBoughtEvent(this, property);
+            property.buyProperty(HumanPlayer.this);
+        }
     }
 
     @Override
     public void askToBuyHouse(City city)
     {
-        engine.askToBuyHouse(this, city.getName(), city.getHousePrice(), buyDecision -> {
+        engine.askToBuyHouse(city, this, buyDecision -> {
             if (buyDecision)
             {
-                engine.addHouseBoughtEvent(this, city.getName());
+                engine.addHouseBoughtEvent(this, city);
                 city.buyHouse(HumanPlayer.this);
             }
         });

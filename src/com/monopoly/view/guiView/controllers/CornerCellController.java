@@ -1,5 +1,7 @@
 package com.monopoly.view.guiView.controllers;
 
+import com.monopoly.view.guiView.guiEntities.GuiCell;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -13,19 +15,19 @@ public class CornerCellController extends CellController
     ImageView backImg;
 
     @Override
-    public void setDrawableProperty(DrawableProperty drawableProperty)
+    public void setDrawableProperty(GuiCell guiCell)
     {
-        setBackground(drawableProperty);
+        setBackground(guiCell);
     }
 
-    public void setBackground(DrawableProperty drawableProperty)
+    public void setBackground(GuiCell guiCell)
     {
         if (backImg.getImage() != null)
             return;
 
         try
         {
-            backImg.setImage(new Image(getClass().getResourceAsStream("boardImages/" + drawableProperty.getPropertyName() + ".png")));
+            backImg.setImage(new Image(getClass().getResourceAsStream("boardImages/" + guiCell.getPropertyName() + ".png")));
         }catch (Exception ignored){}
     }
 }

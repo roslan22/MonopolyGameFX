@@ -4,9 +4,9 @@ import com.monopoly.controller.Controller;
 import com.monopoly.controller.XmlMonopolyInitReader;
 import com.monopoly.logic.engine.MonopolyEngine;
 import com.monopoly.view.guiView.controllers.BoardSceneController;
-import com.monopoly.view.guiView.controllers.DrawableProperty;
 import com.monopoly.view.guiView.controllers.GameInitSceneController;
 import com.monopoly.view.guiView.controllers.GetNamesSceneController;
+import com.monopoly.view.guiView.guiEntities.GuiCell;
 import com.monopoly.view.playerDescisions.PlayerBuyAssetDecision;
 
 import java.awt.geom.IllegalPathStateException;
@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -187,8 +188,8 @@ public class MonopolBoard extends Application {
         boardSceneController.promptPlayer(eventMessage, playersDecision, eventId);
     }
 
-    void setCellsNames(List<? extends DrawableProperty> boardCellsNames) {
-        boardSceneController.initCellsNames(boardCellsNames);
+    void setDrawables(List<? extends GuiCell> drawableProperties) {
+        boardSceneController.initCellsNames(drawableProperties);
     }
 
     public void updateMoney(String fromPlayerName, String toPlayerName, int paymentAmount)
@@ -196,8 +197,8 @@ public class MonopolBoard extends Application {
         boardSceneController.updateMoney(fromPlayerName, toPlayerName, paymentAmount);
     }
 
-    void showPlayerLostMsg(String eventMessage) {
-        boardSceneController.showPlayerLostMsg(eventMessage);
+    void playerLost(String eventMessage, String playerName) {
+        boardSceneController.playerLost(eventMessage, playerName);
     }
 
     void showGameOverMsg(String game_Over) {
@@ -210,5 +211,10 @@ public class MonopolBoard extends Application {
 
     void showCardMsg(String eventMessage) {
         boardSceneController.showCardMsg(eventMessage);
+    }
+
+    public void buy(String playerName, int boardSquareID)
+    {
+        boardSceneController.buy(playerName, boardSquareID);
     }
 }

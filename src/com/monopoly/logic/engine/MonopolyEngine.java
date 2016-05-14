@@ -6,8 +6,10 @@ import com.monopoly.logic.events.Event;
 import com.monopoly.logic.events.EventList;
 import com.monopoly.logic.model.DiceRoll;
 import com.monopoly.logic.model.board.Board;
+import com.monopoly.logic.model.cell.City;
 import com.monopoly.logic.model.cell.Jail;
 import com.monopoly.logic.model.cell.Parking;
+import com.monopoly.logic.model.cell.Property;
 import com.monopoly.logic.model.player.ComputerPlayer;
 import com.monopoly.logic.model.player.HumanPlayer;
 import com.monopoly.logic.model.player.Player;
@@ -95,7 +97,6 @@ public class MonopolyEngine implements Engine
 
     public void initializeBoard(MonopolyInitReader monopolyInitReader) throws CouldNotReadMonopolyInitReader
     {
-        monopolyInitReader.read();
         board = new Board(this,
                           monopolyInitReader.getCells(),
                           monopolyInitReader.getSurpriseCards(),
@@ -292,27 +293,27 @@ public class MonopolyEngine implements Engine
         events.addLandedOnStartSquareEvent(player);
     }
 
-    public void askToBuyProperty(Player player, String propertyGroupName, String propertyName, int price,
-                                 OnBuyDecisionTaken onBuyDecisionTaken)
+    public void askToBuyProperty(Property property, Player player, OnBuyDecisionTaken onBuyDecisionTaken)
     {
         this.onBuyDecisionTaken = onBuyDecisionTaken;
-        events.addPromptPlayerToBuyAssetEvent(player, propertyGroupName, propertyName, price);
+        events.addPromptPlayerToBuyAssetEvent(player, property.getGroupName(), property.getName(), property.getPrice(),
+                                              board.getCellIndex(property));
     }
 
-    public void askToBuyHouse(Player player, String cityName, int housePrice, OnBuyDecisionTaken onBuyDecisionTaken)
+    public void askToBuyHouse(City city, Player player, OnBuyDecisionTaken onBuyDecisionTaken)
     {
         this.onBuyDecisionTaken = onBuyDecisionTaken;
-        events.addPromptPlayerToBuyHouseEvent(player, cityName, housePrice);
+        events.addPromptPlayerToBuyHouseEvent(player, city.getName(), city.getHousePrice(), board.getCellIndex(city));
     }
 
-    public void addHouseBoughtEvent(Player player, String cityName)
+    public void addHouseBoughtEvent(Player player, City city)
     {
-        events.addHouseBoughtEvent(player, cityName);
+        events.addHouseBoughtEvent(player, city.getName(), board.getCellIndex(city));
     }
 
-    public void addAssetBoughtEvent(Player player, String assetName)
+    public void addAssetBoughtEvent(Player player, Property property)
     {
-        events.addAssertBoughtEvent(player, assetName);
+        events.addAssertBoughtEvent(player, property.getName(), board.getCellIndex(property));
     }
 
     public void addPayToBankEvent(Player player, int amount)

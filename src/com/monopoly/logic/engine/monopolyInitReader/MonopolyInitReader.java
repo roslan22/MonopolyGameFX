@@ -7,6 +7,7 @@ import com.monopoly.logic.model.card.AlertCard;
 import com.monopoly.logic.model.card.CardPack;
 import com.monopoly.logic.model.card.SurpriseCard;
 import com.monopoly.logic.model.cell.Cell;
+import com.monopoly.view.guiView.controllers.DrawableProperty;
 
 import java.util.List;
 
@@ -21,4 +22,6 @@ public interface MonopolyInitReader
     KeyCells getKeyCells();
 
     void read() throws CouldNotReadMonopolyInitReader;
+
+    List<? extends DrawableProperty> getDrawables();
 }

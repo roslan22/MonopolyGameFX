@@ -107,7 +107,7 @@ public class ComputerPlayer extends Player
 
     private void buyProperty(Property property)
     {
-        engine.addAssetBoughtEvent(this, property.getName());
+        engine.addAssetBoughtEvent(this, property);
         property.buyProperty(this);
     }
 
@@ -124,7 +124,7 @@ public class ComputerPlayer extends Player
          *  Even if it means he won't have the money for a better house in some other place.
          *  The odds are better if he would buy house whenever possible
          * */
-        engine.addHouseBoughtEvent(this, city.getName());
+        engine.addHouseBoughtEvent(this, city);
         city.buyHouse(this);
     }
 }

@@ -1,5 +1,7 @@
 package com.monopoly.view.guiView.controllers;
 
+import com.monopoly.view.guiView.guiEntities.GuiCell;
+
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -31,7 +33,7 @@ public class CellController implements Initializable
     {
     }
 
-    public void setDrawableProperty(DrawableProperty drawableProperty)
+    public void setDrawableProperty(GuiCell guiCell)
     {}
 
     protected void setTooltip(String text)
@@ -46,4 +48,12 @@ public class CellController implements Initializable
 
     }
 
+    public void playerLost(String playerName)
+    {
+
+    }
+
+    public void buy(String playerName)
+    {
+    }
 }

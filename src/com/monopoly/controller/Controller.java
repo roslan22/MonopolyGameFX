@@ -18,7 +18,6 @@ public class Controller
     public static final int    MAXIMUM_GAME_PLAYERS = 6;
     public static       int    DUMMY_PLAYER_ID      = 1;
     public static       String DEFAULT_XML_PATH  = "configs/monopoly_config.xml";
-    private Event[] events;
 
     public Controller(View view, MonopolyEngine engine)
     {
@@ -47,7 +46,7 @@ public class Controller
     
     private void runEventsLoop() 
     {
-        events = engine.getEvents(DUMMY_PLAYER_ID, lastEvent);
+        Event[] events = engine.getEvents(DUMMY_PLAYER_ID, lastEvent);
         while (events.length != 0)
         {
             lastEvent = events[events.length - 1].getEventID();
@@ -81,8 +80,10 @@ public class Controller
     private void tryToLoadBoardFromXML(String xmlPath) {
         try
         {
-            engine.initializeBoard(new XmlMonopolyInitReader(xmlPath));
-            view.setCellsNames(engine.getBoardCells());
+            XmlMonopolyInitReader monopolyInitReader = new XmlMonopolyInitReader(xmlPath);
+            monopolyInitReader.read();
+            engine.initializeBoard(monopolyInitReader);
+            view.setDrawables(monopolyInitReader.getDrawables());
             System.out.println("Configurations XML loaded from: " + xmlPath);
         } catch (CouldNotReadMonopolyInitReader couldNotReadMonopolyInitReader)
         {
