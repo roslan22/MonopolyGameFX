@@ -1,6 +1,8 @@
 package com.monopoly.view.guiView.controllers;
 
 import com.monopoly.view.playerDescisions.PlayerBuyAssetDecision;
+import com.monopoly.view.playerDescisions.PlayerBuyHouseDecision;
+import com.monopoly.view.playerDescisions.PlayerResign;
 
 import java.awt.geom.IllegalPathStateException;
 import java.io.IOException;
@@ -71,8 +73,6 @@ public class BoardSceneController implements Initializable {
     public final static int MAX_BOARD_CELLS = 36;
     public final static int ANIMATION_SPEED = 700;
 
-    public static final ObservableList allGamePlayers = FXCollections.observableArrayList();
-
     private SimpleBooleanProperty finishedInit;
     private boolean isGameOver = false;
     private List<Pane> boardCells = new ArrayList<>();
@@ -82,6 +82,7 @@ public class BoardSceneController implements Initializable {
     private List<String> humanPlayerNames;
     private int computerPlayers = 0;
     private int nextPlayerPlaceIndex = 1;
+    private PlayerResign playerResign;
     private PlayerBuyAssetDecision playerBuyAssetDecision;
     private int                          waitingForAnswerEventId = 0;
     private Timeline                     timeline                = new Timeline();
@@ -106,7 +107,8 @@ public class BoardSceneController implements Initializable {
     @FXML
     private void onResignClicked()
     {
-        //TODO: Implement
+        hidePromptPane();
+        playerResign.resign();
     }
     
     @Override
@@ -127,6 +129,7 @@ public class BoardSceneController implements Initializable {
         addHumanPlayers();     
         addComputerPlayers();   
         createRightTopPlayersMenu();
+        hidePromptPane();
     }
 
     private void createRightTopPlayersMenu()
@@ -162,7 +165,7 @@ public class BoardSceneController implements Initializable {
     {   
         for(String name :this.humanPlayerNames)
         {
-            allGamePlayers.add(name);
+            //allGamePlayers.add(name);
             placePlayerOnBoard(name, START_PLACE);
         }
     }
@@ -173,7 +176,7 @@ public class BoardSceneController implements Initializable {
         for(int i=1; i <= computerPlayers; i++)
         {
             String name = "Computer" + i;
-            allGamePlayers.add(name);
+            //allGamePlayers.add(name);
             placePlayerOnBoard(name, START_PLACE);
         }
     }
@@ -468,6 +471,14 @@ public class BoardSceneController implements Initializable {
         ft.setOnFinished((ActionEvent actionEvent) -> {
             textArea.setText(eventMessage);
         });
+    }
+
+    public void initDecisions(PlayerBuyAssetDecision playerBuyAssetDecision, 
+                              PlayerBuyHouseDecision playerBuyHouseDecision, 
+                              PlayerResign playerResign) 
+    {
+        this.playerBuyAssetDecision = playerBuyAssetDecision;
+        this.playerResign = playerResign;
     }
 
 }

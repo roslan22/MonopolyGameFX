@@ -8,6 +8,8 @@ import com.monopoly.view.guiView.controllers.DrawableProperty;
 import com.monopoly.view.guiView.controllers.GameInitSceneController;
 import com.monopoly.view.guiView.controllers.GetNamesSceneController;
 import com.monopoly.view.playerDescisions.PlayerBuyAssetDecision;
+import com.monopoly.view.playerDescisions.PlayerBuyHouseDecision;
+import com.monopoly.view.playerDescisions.PlayerResign;
 
 import java.awt.geom.IllegalPathStateException;
 import java.io.File;
@@ -210,5 +212,13 @@ public class MonopolBoard extends Application {
 
     void showCardMsg(String eventMessage) {
         boardSceneController.showCardMsg(eventMessage);
+    }
+
+    void initPlayerDecisions(PlayerBuyAssetDecision playerBuyAssetDecision, 
+                             PlayerBuyHouseDecision playerBuyHouseDecision, 
+                             PlayerResign playerResign) {
+        boardSceneController.initDecisions(playerBuyAssetDecision, 
+                                           playerBuyHouseDecision,
+                                           playerResign);
     }
 }
