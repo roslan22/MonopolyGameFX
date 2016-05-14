@@ -2,7 +2,7 @@ package com.monopoly.view.guiView;
 
 import com.monopoly.logic.events.Event;
 import com.monopoly.view.View;
-import com.monopoly.view.guiView.controllers.DrawableProperty;
+import com.monopoly.view.guiView.guiEntities.GuiCell;
 
 import java.io.File;
 import java.util.List;
@@ -69,7 +69,6 @@ public class GuiView extends View
                                          this.playerBuyHouseDecision,
                                          this.playerResign);
         monopolBoard.showMessageToPlayer("Game Started");
-
     }
 
     @Override
@@ -94,12 +93,14 @@ public class GuiView extends View
     protected void showAssetBoughtMsg(Event event)
     {
         monopolBoard.showMessageToPlayer(event.getEventMessage());
+        monopolBoard.buy(event.getPlayerName(), event.getBoardSquareID());
     }
 
     @Override
     protected void showHouseBoughtMsg(Event event)
     {
         monopolBoard.showMessageToPlayer(event.getEventMessage());
+        monopolBoard.buy(event.getPlayerName(), event.getBoardSquareID());
     }
 
     @Override
@@ -117,14 +118,29 @@ public class GuiView extends View
     @Override
     protected void showPaymentMsg(Event event)
     {
-        monopolBoard.updateMoney(event.getPlayerName(), event.getPaymentToPlayerName(), event.getPaymentAmount());
+        if (isPaymentToBank(event))
+            monopolBoard.updateMoney(event.getPlayerName(), "", event.getPaymentAmount());
+        if (isPaymentFromBank(event))
+            monopolBoard.updateMoney("", event.getPlayerName(), event.getPaymentAmount());
+        if (!event.isPaymentToOrFromTreasury())
+            monopolBoard.updateMoney(event.getPlayerName(), event.getPaymentToPlayerName(), event.getPaymentAmount());
         monopolBoard.showMessageToPlayer(event.getEventMessage());
+    }
+
+    private boolean isPaymentFromBank(Event event)
+    {
+        return event.isPaymentToOrFromTreasury() && !event.isPaymentFromUser();
+    }
+
+    private boolean isPaymentToBank(Event event)
+    {
+        return event.isPaymentToOrFromTreasury() && event.isPaymentFromUser();
     }
 
     @Override
     protected void showPlayerLostMsg(Event event)
     {
-        monopolBoard.showPlayerLostMsg(event.getEventMessage());
+        monopolBoard.playerLost(event.getEventMessage(), event.getPlayerName());
     }
 
     @Override
@@ -169,8 +185,8 @@ public class GuiView extends View
     }
 
     @Override
-    public void setCellsNames(List<? extends DrawableProperty> boardCellsNames)
+    public void setDrawables(List<? extends GuiCell> drawableProperties)
     {
-        monopolBoard.setCellsNames(boardCellsNames);
+        monopolBoard.setDrawables(drawableProperties);
     }
 }

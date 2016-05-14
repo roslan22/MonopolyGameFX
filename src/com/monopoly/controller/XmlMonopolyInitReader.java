@@ -24,6 +24,8 @@ import com.monopoly.logic.model.cell.Parking;
 import com.monopoly.logic.model.cell.PropertyGroup;
 import com.monopoly.logic.model.cell.RoadStart;
 import com.monopoly.logic.model.cell.SurpriseCell;
+import com.monopoly.view.guiView.guiEntities.GuiCell;
+import com.monopoly.view.guiView.guiEntities.GuiCellBuilder;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -41,6 +43,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.stream.Collectors;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
@@ -111,7 +114,7 @@ public class XmlMonopolyInitReader implements MonopolyInitReader
     private CardPack<SurpriseCard> surpriseCardPack;
     private List<SurpriseCard> surpriseCards = new ArrayList<>();
     private CardPack<AlertCard> alertCardPack;
-    private List<AlertCard> alertCards = new ArrayList<>();
+    private List<AlertCard>     alertCards     = new ArrayList<>();
     private List<PropertyGroup> propertyGroups = new ArrayList<>();
 
     private Queue<City>    allCities       = new LinkedList<>();
@@ -126,7 +129,9 @@ public class XmlMonopolyInitReader implements MonopolyInitReader
     public static boolean validateXMLAgainstXSD(String xmlResourcePath, String xsdResourcePath)
     {
         if (Paths.get(xmlResourcePath).isAbsolute())
+        {
             return validateXMLAgainstXSD(new File(xmlResourcePath), xsdResourcePath);
+        }
         return validateXMLAgainstXSD(XmlMonopolyInitReader.class.getResourceAsStream(xsdResourcePath),
                                      XmlMonopolyInitReader.class.getResourceAsStream(xmlResourcePath));
     }
@@ -200,6 +205,19 @@ public class XmlMonopolyInitReader implements MonopolyInitReader
         {
             throw new CouldNotReadMonopolyInitReader(e.getMessage());
         }
+    }
+
+    @Override
+    public List<? extends GuiCell> getDrawables()
+    {
+        return getCells().stream()
+                .map(c -> new GuiCellBuilder().setPropertyName(c.getPropertyName())
+                                                .setGroupName(c.getGroupName())
+                                                .setGroupColor(c.getGroupColor())
+                                                .setHousesOwned(c.getHousesOwned())
+                                                .setOwnerName("")
+                                                .setPropertySummary(c.getPropertySummary()).createGuiCell()).collect(
+                        Collectors.toList());
     }
 
     private void parseMonopolyXML(Document document)
@@ -572,7 +590,9 @@ public class XmlMonopolyInitReader implements MonopolyInitReader
         try
         {
             if (Paths.get(xmlFilePath).isAbsolute())
+            {
                 return builder.parse(new FileInputStream(new File(xmlFilePath)));
+            }
             return builder.parse(getClass().getResourceAsStream(xmlFilePath));
         } catch (SAXException | IOException e)
         {

@@ -1,5 +1,7 @@
 package com.monopoly.view.guiView.controllers;
 
+import com.monopoly.view.guiView.guiEntities.GuiCell;
+
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
@@ -30,13 +32,13 @@ public class PropertyCellController extends CellController implements Initializa
     @FXML
     ImageView backImg;
 
-    private DrawableProperty drawableProperty;
+    private GuiCell guiCell;
     private List<ImageView>  houses;
 
     @Override
-    public void setDrawableProperty(DrawableProperty drawableProperty)
+    public void setDrawableProperty(GuiCell guiCell)
     {
-        this.drawableProperty = drawableProperty;
+        this.guiCell = guiCell;
     }
 
     @Override
@@ -54,11 +56,11 @@ public class PropertyCellController extends CellController implements Initializa
     @Override
     public void paint()
     {
-        paintGroupName(drawableProperty);
-        propertyNameLabel.setText(drawableProperty.getPropertyName());
-        ownerLabel.setText(drawableProperty.getOwnerName());
-        paintHouses(drawableProperty);
-        setTooltip(drawableProperty.getPropertySummary());
+        paintGroupName(guiCell);
+        propertyNameLabel.setText(guiCell.getPropertyName());
+        ownerLabel.setText(guiCell.getOwnerName());
+        paintHouses(guiCell);
+        setTooltip(guiCell.getPropertySummary());
         setBackground();
     }
 
@@ -82,9 +84,30 @@ public class PropertyCellController extends CellController implements Initializa
 
         try
         {
-            backImg.setImage(new Image(getClass().getResourceAsStream("boardImages/" + this.drawableProperty.getGroupName() + ".png")));
-            if (!this.drawableProperty.getPropertyName().equals(""))
+            backImg.setImage(new Image(getClass().getResourceAsStream("boardImages/" + this.guiCell.getGroupName() + ".png")));
+            if (!this.guiCell.getPropertyName().equals(""))
                 backImg.setOpacity(0.2);
         }catch (Exception ignored){}
+    }
+
+    @Override
+    public void playerLost(String playerName)
+    {
+        if (guiCell.getOwnerName().equals(playerName))
+        {
+            guiCell.setOwnerName("");
+            guiCell.setHousesOwned(0);
+            paint();
+        }
+    }
+
+    @Override
+    public void buy(String playerName)
+    {
+        if (guiCell.getOwnerName().equals(playerName))
+            guiCell.setHousesOwned(guiCell.getHousesOwned() + 1);
+        else
+            guiCell.setOwnerName(playerName);
+        paint();
     }
 }

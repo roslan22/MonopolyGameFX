@@ -2,7 +2,7 @@ package com.monopoly.view;
 
 import com.monopoly.logic.events.Event;
 import com.monopoly.logic.events.EventType;
-import com.monopoly.view.guiView.controllers.DrawableProperty;
+import com.monopoly.view.guiView.guiEntities.GuiCell;
 import com.monopoly.view.playerDescisions.PlayerBuyAssetDecision;
 import com.monopoly.view.playerDescisions.PlayerBuyHouseDecision;
 import com.monopoly.view.playerDescisions.PlayerResign;
@@ -152,7 +152,7 @@ public abstract class View
 
     protected abstract void showGoToJailMsg(Event event);
 
-    public abstract void setCellsNames(List<? extends DrawableProperty> boardCellsNames);
+    public abstract void setDrawables(List<? extends GuiCell> drawableProperties);
 
     private void unknownEvent()
     {
