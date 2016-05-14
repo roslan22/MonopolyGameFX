@@ -2,6 +2,8 @@ package com.monopoly.view.guiView.controllers;
 
 import com.monopoly.view.guiView.guiEntities.GuiCell;
 import com.monopoly.view.playerDescisions.PlayerBuyAssetDecision;
+import com.monopoly.view.playerDescisions.PlayerBuyHouseDecision;
+import com.monopoly.view.playerDescisions.PlayerResign;
 
 import java.awt.geom.IllegalPathStateException;
 import java.io.IOException;
@@ -85,6 +87,7 @@ public class BoardSceneController implements Initializable
     private PlayerBuyAssetDecision playerBuyAssetDecision;
     private int                    waitingForAnswerEventId;
     private int                    loops;
+    private PlayerResign playerResign;
 
     private SequentialTransition seqTransition        = new SequentialTransition();
     private boolean              isGameOver           = false;
@@ -108,7 +111,8 @@ public class BoardSceneController implements Initializable
     @FXML
     private void onResignClicked()
     {
-        //TODO: Implement
+        hidePromptPane();
+        playerResign.resign();
     }
 
     @Override
@@ -127,6 +131,7 @@ public class BoardSceneController implements Initializable
         addHumanPlayers(playerNames);
         addComputerPlayers(computerPlayers);
         createRightTopPlayersMenu();
+        hidePromptPane();
     }
 
     private void createRightTopPlayersMenu()
@@ -437,6 +442,7 @@ public class BoardSceneController implements Initializable
         {
             return (cell + currentCell - MAX_BOARD_CELLS);
         }
+
         return cell + currentCell;
     }
 
@@ -553,6 +559,14 @@ public class BoardSceneController implements Initializable
         FadeTransition ft = createIconsFadeTransition(gameOverLabel);
         seqTransition.getChildren().add(ft);
         ft.setOnFinished((ActionEvent actionEvent) -> textArea.setText(eventMessage));
+    }
+
+    public void initDecisions(PlayerBuyAssetDecision playerBuyAssetDecision,
+                              PlayerBuyHouseDecision playerBuyHouseDecision,
+                              PlayerResign playerResign)
+    {
+        this.playerBuyAssetDecision = playerBuyAssetDecision;
+        this.playerResign = playerResign;
     }
 
     private void addSeqTransition(Procedure procedure)

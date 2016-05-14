@@ -64,6 +64,9 @@ public class GuiView extends View
     @Override
     protected void showGameStartedMsg()
     {
+        monopolBoard.initPlayerDecisions(this.playerBuyAssetDecision,
+                                         this.playerBuyHouseDecision,
+                                         this.playerResign);
     }
 
     @Override
