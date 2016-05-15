@@ -59,7 +59,7 @@ public class BoardSceneController implements Initializable
     public final static int LAST_COLUMN             = 9;
     public final static int START_PLACE             = 0;
     public final static int MAX_BOARD_CELLS         = 36;
-    public final static int DEFAULT_ANIMATION_SPEED = 700;
+    public final static int DEFAULT_ANIMATION_SPEED = 100;
     public final static int FIRST_ROW               = 0;
 
     @FXML
@@ -620,7 +620,6 @@ public class BoardSceneController implements Initializable
     public void showPlayerResignMsg(String eventMessage) 
     {
         showMessage(eventMessage);
-        startFadeAnimations();
     }
 
     @FunctionalInterface
