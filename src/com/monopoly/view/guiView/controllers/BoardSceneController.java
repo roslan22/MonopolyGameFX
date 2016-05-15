@@ -461,6 +461,11 @@ public class BoardSceneController implements Initializable
     public void playerLost(String eventMessage, String playerName)
     {
         addSeqTransitionToTextArea(eventMessage, gameMsg);
+        removePlayerAssets(playerName);
+    }
+
+    private void removePlayerAssets(String playerName)
+    {
         addSeqTransition(() -> cellControllers.forEach(c -> c.playerLost(playerName)));
     }
 
@@ -617,9 +622,10 @@ public class BoardSceneController implements Initializable
         });
     }
 
-    public void showPlayerResignMsg(String eventMessage) 
+    public void showPlayerResignMsg(String eventMessage, String playerName)
     {
         showMessage(eventMessage);
+        removePlayerAssets(playerName);
         startFadeAnimations();
     }
 

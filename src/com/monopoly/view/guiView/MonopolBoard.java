@@ -233,7 +233,7 @@ public class MonopolBoard extends Application {
         boardSceneController.showWarningCard(eventMessage);
     }
 
-    void showPlayerResignMsg(String eventMessage) {
-        boardSceneController.showPlayerResignMsg(eventMessage);
+    void showPlayerResignMsg(String eventMessage, String playerName) {
+        boardSceneController.showPlayerResignMsg(eventMessage, playerName);
     }
 }
