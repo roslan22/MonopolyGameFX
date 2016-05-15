@@ -100,6 +100,7 @@ public class XmlMonopolyInitReader implements MonopolyInitReader
     public static final String MONOPOLY_RENT_COST                   = "stayCost";
     public static final String UTILITY                              = "Utility";
     public static final String TRANSPORTATION                       = "Trans";
+    private static XmlMonopolyInitReader xmlMonopolyInitReader;
 
     private String xmlFilePath;
 
@@ -121,9 +122,19 @@ public class XmlMonopolyInitReader implements MonopolyInitReader
     private Queue<Company> utilities       = new LinkedList<>();
     private Queue<Company> transportations = new LinkedList<>();
 
-    public XmlMonopolyInitReader(String xmlFilePath)
+    private XmlMonopolyInitReader(String xmlFilePath)
     {
         this.xmlFilePath = xmlFilePath;
+    }
+
+    public static XmlMonopolyInitReader getInstance(String xmlFilePath)
+    {
+        xmlFilePath = xmlFilePath == null ? Controller.DEFAULT_XML_PATH : xmlFilePath;
+        if (xmlMonopolyInitReader == null || !xmlMonopolyInitReader.getFilePath().equals(xmlFilePath))
+        {
+            xmlMonopolyInitReader = new XmlMonopolyInitReader(xmlFilePath);
+        }
+        return xmlMonopolyInitReader;
     }
 
     public static boolean validateXMLAgainstXSD(String xmlResourcePath, String xsdResourcePath)
@@ -192,18 +203,35 @@ public class XmlMonopolyInitReader implements MonopolyInitReader
         return keyCells;
     }
 
+    public void readInBackground()
+    {
+        new Thread(() -> {
+            try
+            {
+                read();
+            } catch (CouldNotReadMonopolyInitReader ignored)
+            {
+            }
+        }).start();
+    }
+
     @Override
     public void read() throws CouldNotReadMonopolyInitReader
     {
-        try
+        synchronized (this)
         {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = getDocumentBuilder(factory);
-            Document document = getParseDocument(builder);
-            parseMonopolyXML(document);
-        } catch (CouldNotReadMonopolyXML e)
-        {
-            throw new CouldNotReadMonopolyInitReader(e.getMessage());
+            if (getCells().size() > 0)
+                return;
+            try
+            {
+                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder builder = getDocumentBuilder(factory);
+                Document document = getParseDocument(builder);
+                parseMonopolyXML(document);
+            } catch (CouldNotReadMonopolyXML e)
+            {
+                throw new CouldNotReadMonopolyInitReader(e.getMessage());
+            }
         }
     }
 
@@ -610,6 +638,11 @@ public class XmlMonopolyInitReader implements MonopolyInitReader
             e.printStackTrace();
             return null;
         }
+    }
+
+    public String getFilePath()
+    {
+        return xmlFilePath;
     }
 
     private class CouldNotReadMonopolyXML extends RuntimeException

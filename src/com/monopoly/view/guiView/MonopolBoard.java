@@ -82,6 +82,7 @@ public class MonopolBoard extends Application {
     private void endGameInit(GameInitSceneController gameInitController)
     {
         externalXML = gameInitController.getXMLFile();
+        XmlMonopolyInitReader.getInstance(externalXML != null ? externalXML.getPath() : null).readInBackground();
         humanPlayers = gameInitController.getHumanPlayers();
         computerPlayers = gameInitController.getComputerPlayers();
         askForHumanPlayersNames(gameInitController.getHumanPlayers());
