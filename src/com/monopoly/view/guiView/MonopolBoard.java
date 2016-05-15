@@ -252,7 +252,6 @@ public class MonopolBoard extends Application {
     public void startAnotherGame()
     {
         isNewGameRequired = true;
-        endGetNames(playerNames); 
         endGetNames(playerNames);
     }
     
