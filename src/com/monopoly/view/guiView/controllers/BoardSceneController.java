@@ -115,6 +115,7 @@ public class BoardSceneController implements Initializable
         else //new game required
         {
             returnResignButtonToPromtPane();
+            isGameOver = false;
             newGameStartProcedure.execute();
         }
     }

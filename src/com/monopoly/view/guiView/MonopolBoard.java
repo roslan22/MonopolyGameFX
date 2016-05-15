@@ -39,7 +39,7 @@ public class MonopolBoard extends Application {
     private List<String> playerNames;
     private Boolean isNewGameRequired = true;
     private Scene currentBoardScene;
-
+    
     Procedure startNewGameProcedure = this::startAnotherGame;
     Procedure notToStartNewGameProcedure = this::notToStartAnotherGame;
     
@@ -252,14 +252,12 @@ public class MonopolBoard extends Application {
     public void startAnotherGame()
     {
         isNewGameRequired = true;
-        endGetNames(playerNames);
-
+        endGetNames(playerNames); 
     }
     
     public void notToStartAnotherGame()
     {
        isNewGameRequired = false;
-       primaryStage.close();
     }
     
 }

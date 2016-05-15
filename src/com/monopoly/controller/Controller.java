@@ -13,7 +13,15 @@ public class Controller
     private View   view;
     private Engine engine;
     private int lastEvent = 0;
+    private boolean isAnotherGame = false;
 
+    public boolean isIsAnotherGame() {
+        return isAnotherGame;
+    }
+
+    public void setIsAnotherGame(boolean isAnotherGame) {
+        this.isAnotherGame = isAnotherGame;
+    }
     public static       String GAME_NAME            = "Monopoly";
     public static final int    MAXIMUM_GAME_PLAYERS = 6;
     public static       int    DUMMY_PLAYER_ID      = 1;
@@ -60,6 +68,7 @@ public class Controller
         
     private void initGame()
     {
+
         initBoard();
         createPlayers();
     }
@@ -87,7 +96,7 @@ public class Controller
             System.out.println("Configurations XML loaded from: " + xmlPath);
         } catch (CouldNotReadMonopolyInitReader couldNotReadMonopolyInitReader)
         {
-            System.out.println(couldNotReadMonopolyInitReader.getMessage());
+            System.out.println("trying to load again" + couldNotReadMonopolyInitReader.getMessage());
             initBoard();
         }
     }
