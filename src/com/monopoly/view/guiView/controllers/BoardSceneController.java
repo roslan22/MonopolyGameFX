@@ -82,7 +82,7 @@ public class BoardSceneController implements Initializable
 
     @FXML
     private Label warningText, surpriseText;
-    
+
     @FXML
     private Button buttonResign;
 
@@ -108,7 +108,7 @@ public class BoardSceneController implements Initializable
     private void onYesClicked()
     {
         hidePromptPane();
-        if(!isGameOver)
+        if (!isGameOver)
         {
             playerBuyAssetDecision.onAnswer(waitingForAnswerEventId, true);
         }
@@ -124,9 +124,9 @@ public class BoardSceneController implements Initializable
     private void onNoClicked()
     {
         hidePromptPane();
-        if(!isGameOver)
+        if (!isGameOver)
         {
-        playerBuyAssetDecision.onAnswer(waitingForAnswerEventId, false);
+            playerBuyAssetDecision.onAnswer(waitingForAnswerEventId, false);
         }
         else
         {
@@ -204,7 +204,7 @@ public class BoardSceneController implements Initializable
     {
         String playerID;
         playerID = "player" + nextPlayerPlaceIndex;
-        
+
         playersPlaceOnBoard.put(playerName, createPlayerPosition(placeIndex, playerID));
         playerNamesAndIds.put(playerName, playerID);
         playerNameToMoney.put(playerName, INIT_MONEY);
@@ -533,7 +533,7 @@ public class BoardSceneController implements Initializable
 
         return rotateTransition;
     }
-    
+
 
     public void showSurpriseCard(String cardText)
     {
@@ -623,17 +623,17 @@ public class BoardSceneController implements Initializable
         ft.setOnFinished((ActionEvent actionEvent) -> textArea.setText(eventMessage));
     }
 
-    public void initPromtDecisions(PlayerBuyAssetDecision playerBuyAssetDecision, PlayerBuyHouseDecision playerBuyHouseDecision,
-                              PlayerResign playerResign)
+    public void initPromtDecisions(PlayerBuyAssetDecision playerBuyAssetDecision,
+                                   PlayerBuyHouseDecision playerBuyHouseDecision, PlayerResign playerResign)
     {
         this.playerBuyAssetDecision = playerBuyAssetDecision;
         this.playerResign = playerResign;
     }
-    
+
     public void initAnotherGameDecisions(Procedure newGameStart, Procedure notToStartNewGame)
     {
-         this.newGameStartProcedure = newGameStart;
-         this.notToStartNewGameProcedure = notToStartNewGame;
+        this.newGameStartProcedure = newGameStart;
+        this.notToStartNewGameProcedure = notToStartNewGame;
     }
 
     private void addSeqTransition(Procedure procedure)
@@ -649,7 +649,7 @@ public class BoardSceneController implements Initializable
         addSeqTransition(() -> cellControllers.get(boardSquareID).buy(playerName));
     }
 
-    private void showThrowingCubeMessage(String string) 
+    private void showThrowingCubeMessage(String string)
     {
         addSeqTransition(() -> {
             gameMsg.setText(string);
@@ -664,28 +664,31 @@ public class BoardSceneController implements Initializable
         removePlayerIcon(playerName);
     }
 
-    private void showTryAnotherGamePane() {
-            textAreaPromt.setText("Do you want to start another game?");
-            //this.waitingForAnswerEventId = eventID;
-            hideResignButton();
-            showPromptPane();
+    private void showTryAnotherGamePane()
+    {
+        textAreaPromt.setText("Do you want to start another game?");
+        //this.waitingForAnswerEventId = eventID;
+        hideResignButton();
+        showPromptPane();
 
         //isGameOver = true;
         //startFadeAnimations();    
     }
 
-    private void removePlayerIcon(String playerName) {
+    private void removePlayerIcon(String playerName)
+    {
         PlayerPosition playerPos = playersPlaceOnBoard.get(playerName);
         Node playerIcon = playerPos.getPlayerIcon();
         removePlayerIconFromBoard(playerIcon);
     }
-    
+
     private void hideResignButton()
     {
-         buttonResign.setVisible(false);
+        buttonResign.setVisible(false);
     }
 
-    private void returnResignButtonToPromtPane() {
-            buttonResign.setVisible(true);
+    private void returnResignButtonToPromtPane()
+    {
+        buttonResign.setVisible(true);
     }
 }

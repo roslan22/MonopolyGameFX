@@ -18,31 +18,34 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
-public class MonopolBoard extends Application {
-    
-    private static final String BOARD_SCENE_FXML_PATH = "BoardScene.fxml";
+public class MonopolBoard extends Application
+{
+
+    private static final String BOARD_SCENE_FXML_PATH     = "BoardScene.fxml";
     private static final String GAME_INIT_SCENE_FXML_PATH = "game_init_scene.fxml";
     private static final String GET_NAMES_SCENE_FXML_PATH = "game_init_get_human_names.fxml";
 
     private Stage primaryStage;
 
     private File externalXML;
-    private int humanPlayers;
-    private int computerPlayers;
-    private List<String> humanPlayersNames = new ArrayList<>();
+    private int  humanPlayers;
+    private int  computerPlayers;
+    private List<String>         humanPlayersNames    = new ArrayList<>();
     private BoardSceneController boardSceneController = null;
     private List<String> playerNames;
     private Boolean isNewGameRequired = true;
     private Scene currentBoardScene;
-    
-    Procedure startNewGameProcedure = this::startAnotherGame;
+
+    Procedure startNewGameProcedure      = this::startAnotherGame;
     Procedure notToStartNewGameProcedure = this::notToStartAnotherGame;
-    
+
     @Override
     public void start(Stage primaryStage)
     {
@@ -50,6 +53,7 @@ public class MonopolBoard extends Application {
 
         primaryStage.setTitle("Monopoly");
         primaryStage.setResizable(false);
+        primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("controllers/boardImages/Surprise.png")));
         showGameInit();
     }
 
@@ -74,7 +78,8 @@ public class MonopolBoard extends Application {
         primaryStage.setScene(new Scene(getRoot(gameInitXMLLoader)));
 
         GameInitSceneController gameInitController = gameInitXMLLoader.getController();
-        gameInitController.setXmlValidator(xml -> XmlMonopolyInitReader.validateXMLAgainstXSD(xml, XmlMonopolyInitReader.XSD_FILE_PATH));
+        gameInitController.setXmlValidator(xml -> XmlMonopolyInitReader
+                .validateXMLAgainstXSD(xml, XmlMonopolyInitReader.XSD_FILE_PATH));
         gameInitController.setNextListener(() -> endGameInit(gameInitController));
         primaryStage.show();
     }
@@ -82,6 +87,7 @@ public class MonopolBoard extends Application {
     private void endGameInit(GameInitSceneController gameInitController)
     {
         externalXML = gameInitController.getXMLFile();
+        XmlMonopolyInitReader.getInstance(externalXML != null ? externalXML.getPath() : null).readInBackground();
         humanPlayers = gameInitController.getHumanPlayers();
         computerPlayers = gameInitController.getComputerPlayers();
         askForHumanPlayersNames(gameInitController.getHumanPlayers());
@@ -102,10 +108,13 @@ public class MonopolBoard extends Application {
         if (humanPlayers != 0)
         {
             primaryStage.setScene(new Scene(root));
-            getNamesFXMLLoaderController.setGetNamesEndedListener(() -> endGetNames(getNamesFXMLLoaderController.getNames()));
+            getNamesFXMLLoaderController
+                    .setGetNamesEndedListener(() -> endGetNames(getNamesFXMLLoaderController.getNames()));
         }
         else
+        {
             endGetNames(getNamesFXMLLoaderController.getNames());
+        }
     }
 
     private void endGetNames(List<String> names)
@@ -114,12 +123,12 @@ public class MonopolBoard extends Application {
         Parent root = getRoot(getNamesFXMLLoader);
         boardSceneController = getNamesFXMLLoader.getController();
         playerNames = names;
-        
+
         boardSceneController.setPlayers(names, computerPlayers);
         currentBoardScene = new Scene(root);
         primaryStage.setScene(currentBoardScene);
         primaryStage.centerOnScreen();
-        
+
         startGame();
     }
 
@@ -129,7 +138,8 @@ public class MonopolBoard extends Application {
         return new FXMLLoader(getClass().getResource(fxmlPath));
     }
 
-    private Parent getRoot(FXMLLoader fxmlLoader) {
+    private Parent getRoot(FXMLLoader fxmlLoader)
+    {
         try
         {
             return (Parent) fxmlLoader.load(fxmlLoader.getLocation().openStream());
@@ -147,7 +157,7 @@ public class MonopolBoard extends Application {
 
     private void startGame()
     {
-        while(isNewGameRequired)
+        while (isNewGameRequired)
         {
             playMonopoly();
             isNewGameRequired = GuiView.isNewGameRequired();
@@ -159,8 +169,7 @@ public class MonopolBoard extends Application {
         try
         {
             startController();
-        }
-        catch (Exception e)
+        } catch (Exception e)
         {
             System.out.println(e.getMessage());
             playMonopoly();
@@ -178,18 +187,18 @@ public class MonopolBoard extends Application {
     {
         return humanPlayersNames;
     }
-        
-    public void showMessageToPlayer(String eventMessage) 
+
+    public void showMessageToPlayer(String eventMessage)
     {
-        if(boardSceneController != null)
+        if (boardSceneController != null)
         {
             boardSceneController.showMessage(eventMessage);
         }
     }
-    
-    public void movePlayer(int cell, String playerName) 
+
+    public void movePlayer(int cell, String playerName)
     {
-        if(boardSceneController != null)
+        if (boardSceneController != null)
         {
             boardSceneController.movePlayer(cell, playerName);
         }
@@ -200,7 +209,8 @@ public class MonopolBoard extends Application {
         boardSceneController.promptPlayer(eventMessage, playersDecision, eventId);
     }
 
-    void setDrawables(List<? extends GuiCell> drawableProperties) {
+    void setDrawables(List<? extends GuiCell> drawableProperties)
+    {
         boardSceneController.initCellsNames(drawableProperties);
     }
 
@@ -209,29 +219,30 @@ public class MonopolBoard extends Application {
         boardSceneController.updateMoney(fromPlayerName, toPlayerName, paymentAmount);
     }
 
-    void playerLost(String eventMessage, String playerName) {
+    void playerLost(String eventMessage, String playerName)
+    {
         boardSceneController.playerLost(eventMessage, playerName);
     }
 
-    void showGameOverMsg(String game_Over) {
+    void showGameOverMsg(String game_Over)
+    {
         boardSceneController.showGameOverMsg(game_Over);
     }
 
-    void showDiceRollResult(String playerName, String eventMessage, int firstResult, int secondResult) {
+    void showDiceRollResult(String playerName, String eventMessage, int firstResult, int secondResult)
+    {
         boardSceneController.showDiceRollResult(playerName, eventMessage, firstResult, secondResult);
     }
 
-    void showSurpriseCard(String eventMessage) {
+    void showSurpriseCard(String eventMessage)
+    {
         boardSceneController.showSurpriseCard(eventMessage);
     }
 
-    void initPlayerDecisions(PlayerBuyAssetDecision playerBuyAssetDecision,
-                             PlayerBuyHouseDecision playerBuyHouseDecision,
-                             PlayerResign playerResign) 
+    void initPlayerDecisions(PlayerBuyAssetDecision playerBuyAssetDecision, PlayerBuyHouseDecision playerBuyHouseDecision,
+                             PlayerResign playerResign)
     {
-        boardSceneController.initPromtDecisions(playerBuyAssetDecision,
-                                           playerBuyHouseDecision,
-                                           playerResign);
+        boardSceneController.initPromtDecisions(playerBuyAssetDecision, playerBuyHouseDecision, playerResign);
         boardSceneController.initAnotherGameDecisions(startNewGameProcedure, notToStartNewGameProcedure);
     }
 
@@ -245,19 +256,21 @@ public class MonopolBoard extends Application {
         boardSceneController.showWarningCard(eventMessage);
     }
 
-    public void showPlayerResignMsg(String eventMessage, String playerName) {
+    public void showPlayerResignMsg(String eventMessage, String playerName)
+    {
         boardSceneController.showPlayerResignMsg(eventMessage, playerName);
     }
-    
+
     public void startAnotherGame()
     {
         isNewGameRequired = true;
         endGetNames(playerNames);
     }
-    
+
     public void notToStartAnotherGame()
     {
-       isNewGameRequired = false;
+        isNewGameRequired = false;
+        Platform.exit();
     }
-    
+
 }

@@ -73,7 +73,7 @@ public class Controller
         createPlayers();
     }
 
-    private void initBoard()
+    private void  initBoard()
     {
         String xmlPath;
         xmlPath = view.loadExternalXmlPath();
@@ -89,11 +89,10 @@ public class Controller
     private void tryToLoadBoardFromXML(String xmlPath) {
         try
         {
-            XmlMonopolyInitReader monopolyInitReader = new XmlMonopolyInitReader(xmlPath);
+            XmlMonopolyInitReader monopolyInitReader = XmlMonopolyInitReader.getInstance(xmlPath);
             monopolyInitReader.read();
             engine.initializeBoard(monopolyInitReader);
             view.setDrawables(monopolyInitReader.getDrawables());
-            System.out.println("Configurations XML loaded from: " + xmlPath);
         } catch (CouldNotReadMonopolyInitReader couldNotReadMonopolyInitReader)
         {
             System.out.println("trying to load again" + couldNotReadMonopolyInitReader.getMessage());
