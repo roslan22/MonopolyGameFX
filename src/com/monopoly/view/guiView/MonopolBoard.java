@@ -49,6 +49,11 @@ public class MonopolBoard extends Application
     @Override
     public void start(Stage primaryStage)
     {
+        startGame(primaryStage);
+    }
+
+    private void startGame(Stage primaryStage)
+    {
         this.primaryStage = primaryStage;
 
         primaryStage.setTitle("Monopoly");
@@ -263,8 +268,19 @@ public class MonopolBoard extends Application
 
     public void startAnotherGame()
     {
+        cleanUp();
+        startGame(primaryStage);
+    }
+
+    private void cleanUp()
+    {
+        externalXML = null;
+        humanPlayers = 0;
+        computerPlayers = 0;
+        humanPlayersNames    = new ArrayList<>(); boardSceneController = null;
+        playerNames = new ArrayList<>();
         isNewGameRequired = true;
-        endGetNames(playerNames);
+        currentBoardScene = null;
     }
 
     public void notToStartAnotherGame()

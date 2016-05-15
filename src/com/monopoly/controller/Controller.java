@@ -68,7 +68,6 @@ public class Controller
         
     private void initGame()
     {
-
         initBoard();
         createPlayers();
     }
