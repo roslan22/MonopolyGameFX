@@ -110,6 +110,7 @@ public class MonopolBoard extends Application {
         
         boardSceneController.setPlayers(names, computerPlayers);
         primaryStage.setScene(new Scene(root));
+        primaryStage.setMaximized(true);
         startGame();
     }
 
