@@ -4,6 +4,7 @@ import com.monopoly.view.guiView.guiEntities.GuiCell;
 import com.monopoly.view.playerDescisions.PlayerBuyAssetDecision;
 import com.monopoly.view.playerDescisions.PlayerBuyHouseDecision;
 import com.monopoly.view.playerDescisions.PlayerResign;
+import com.monopoly.view.guiView.Procedure;
 
 import java.awt.geom.IllegalPathStateException;
 import java.io.IOException;
@@ -31,6 +32,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
@@ -44,6 +46,7 @@ import javafx.scene.shape.CubicCurveTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.util.Duration;
+
 
 public class BoardSceneController implements Initializable
 {
@@ -79,6 +82,9 @@ public class BoardSceneController implements Initializable
 
     @FXML
     private Label warningText, surpriseText;
+    
+    @FXML
+    private Button buttonResign;
 
     private List<CellController>        cellControllers     = new ArrayList<>();
     private List<Pane>                  boardCells          = new ArrayList<>();
@@ -90,6 +96,8 @@ public class BoardSceneController implements Initializable
     private int                    waitingForAnswerEventId;
     private int                    loops;
     private PlayerResign           playerResign;
+    private Procedure              newGameStartProcedure;
+    private Procedure              notToStartNewGameProcedure;
 
     private SequentialTransition seqTransition        = new SequentialTransition();
     private boolean              isGameOver           = false;
@@ -100,14 +108,29 @@ public class BoardSceneController implements Initializable
     private void onYesClicked()
     {
         hidePromptPane();
-        playerBuyAssetDecision.onAnswer(waitingForAnswerEventId, true);
+        if(!isGameOver)
+        {
+            playerBuyAssetDecision.onAnswer(waitingForAnswerEventId, true);
+        }
+        else //new game required
+        {
+            returnResignButtonToPromtPane();
+            newGameStartProcedure.execute();
+        }
     }
 
     @FXML
     private void onNoClicked()
     {
         hidePromptPane();
+        if(!isGameOver)
+        {
         playerBuyAssetDecision.onAnswer(waitingForAnswerEventId, false);
+        }
+        else
+        {
+            notToStartNewGameProcedure.execute();
+        }
     }
 
     @FXML
@@ -359,6 +382,10 @@ public class BoardSceneController implements Initializable
             {
                 showPromptPane();
             }
+            else
+            {
+                showTryAnotherGamePane();
+            }
         });
     }
 
@@ -462,6 +489,7 @@ public class BoardSceneController implements Initializable
     {
         addSeqTransitionToTextArea(eventMessage, gameMsg);
         removePlayerAssets(playerName);
+        removePlayerIcon(playerName);
     }
 
     private void removePlayerAssets(String playerName)
@@ -594,11 +622,17 @@ public class BoardSceneController implements Initializable
         ft.setOnFinished((ActionEvent actionEvent) -> textArea.setText(eventMessage));
     }
 
-    public void initDecisions(PlayerBuyAssetDecision playerBuyAssetDecision, PlayerBuyHouseDecision playerBuyHouseDecision,
+    public void initPromtDecisions(PlayerBuyAssetDecision playerBuyAssetDecision, PlayerBuyHouseDecision playerBuyHouseDecision,
                               PlayerResign playerResign)
     {
         this.playerBuyAssetDecision = playerBuyAssetDecision;
         this.playerResign = playerResign;
+    }
+    
+    public void initAnotherGameDecisions(Procedure newGameStart, Procedure notToStartNewGame)
+    {
+         this.newGameStartProcedure = newGameStart;
+         this.notToStartNewGameProcedure = notToStartNewGame;
     }
 
     private void addSeqTransition(Procedure procedure)
@@ -626,11 +660,31 @@ public class BoardSceneController implements Initializable
     {
         showMessage(eventMessage);
         removePlayerAssets(playerName);
+        removePlayerIcon(playerName);
     }
 
-    @FunctionalInterface
-    public interface Procedure
+    private void showTryAnotherGamePane() {
+            textAreaPromt.setText("Do you want to start another game?");
+            //this.waitingForAnswerEventId = eventID;
+            hideResignButton();
+            showPromptPane();
+
+        //isGameOver = true;
+        //startFadeAnimations();    
+    }
+
+    private void removePlayerIcon(String playerName) {
+        PlayerPosition playerPos = playersPlaceOnBoard.get(playerName);
+        Node playerIcon = playerPos.getPlayerIcon();
+        removePlayerIconFromBoard(playerIcon);
+    }
+    
+    private void hideResignButton()
     {
-        void execute();
+         buttonResign.setVisible(false);
+    }
+
+    private void returnResignButtonToPromtPane() {
+            buttonResign.setVisible(true);
     }
 }

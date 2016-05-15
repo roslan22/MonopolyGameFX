@@ -19,12 +19,9 @@ import java.util.List;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 public class MonopolBoard extends Application {
     
@@ -39,7 +36,13 @@ public class MonopolBoard extends Application {
     private int computerPlayers;
     private List<String> humanPlayersNames = new ArrayList<>();
     private BoardSceneController boardSceneController = null;
+    private List<String> playerNames;
+    private Boolean isNewGameRequired = true;
+    private Scene currentBoardScene;
 
+    Procedure startNewGameProcedure = this::startAnotherGame;
+    Procedure notToStartNewGameProcedure = this::notToStartAnotherGame;
+    
     @Override
     public void start(Stage primaryStage)
     {
@@ -110,9 +113,11 @@ public class MonopolBoard extends Application {
         FXMLLoader getNamesFXMLLoader = getFXMLLoader(BOARD_SCENE_FXML_PATH);
         Parent root = getRoot(getNamesFXMLLoader);
         boardSceneController = getNamesFXMLLoader.getController();
+        playerNames = names;
         
         boardSceneController.setPlayers(names, computerPlayers);
-        primaryStage.setScene(new Scene(root));
+        currentBoardScene = new Scene(root);
+        primaryStage.setScene(currentBoardScene);
         primaryStage.centerOnScreen();
         
         startGame();
@@ -142,7 +147,6 @@ public class MonopolBoard extends Application {
 
     private void startGame()
     {
-        Boolean isNewGameRequired = true;
         while(isNewGameRequired)
         {
             playMonopoly();
@@ -223,10 +227,12 @@ public class MonopolBoard extends Application {
 
     void initPlayerDecisions(PlayerBuyAssetDecision playerBuyAssetDecision,
                              PlayerBuyHouseDecision playerBuyHouseDecision,
-                             PlayerResign playerResign) {
-        boardSceneController.initDecisions(playerBuyAssetDecision,
+                             PlayerResign playerResign) 
+    {
+        boardSceneController.initPromtDecisions(playerBuyAssetDecision,
                                            playerBuyHouseDecision,
                                            playerResign);
+        boardSceneController.initAnotherGameDecisions(startNewGameProcedure, notToStartNewGameProcedure);
     }
 
     public void buy(String playerName, int boardSquareID)
@@ -239,7 +245,21 @@ public class MonopolBoard extends Application {
         boardSceneController.showWarningCard(eventMessage);
     }
 
-    void showPlayerResignMsg(String eventMessage, String playerName) {
+    public void showPlayerResignMsg(String eventMessage, String playerName) {
         boardSceneController.showPlayerResignMsg(eventMessage, playerName);
     }
+    
+    public void startAnotherGame()
+    {
+        isNewGameRequired = true;
+        endGetNames(playerNames);
+
+    }
+    
+    public void notToStartAnotherGame()
+    {
+       isNewGameRequired = false;
+       primaryStage.close();
+    }
+    
 }
