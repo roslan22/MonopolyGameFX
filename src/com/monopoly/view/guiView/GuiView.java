@@ -142,7 +142,7 @@ public class GuiView extends View
     @Override
     protected void showPlayerResignMsg(Event event)
     {
-         monopolBoard.showPlayerResignMsg(event.getEventMessage());
+         monopolBoard.showPlayerResignMsg(event.getEventMessage(), event.getPlayerName());
     }
 
     @Override
